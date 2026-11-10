@@ -18,6 +18,7 @@ Cada NPC que o CJ mata, cada carro que ele rouba ou explode aumenta a **pressão
 - [Problemas conhecidos](#problemas-conhecidos)
 - [Compilando a partir do código-fonte](#compilando-a-partir-do-código-fonte)
 - [Créditos](#créditos)
+- [Licença](#licença)
 
 ---
 
@@ -231,5 +232,9 @@ O resultado sai em `Builds\Retaliation 1.05\`.
 - **Desenvolvimento:** feito com o auxílio do [Claude Code](https://claude.com/claude-code)
 - Referências técnicas: [plugin-sdk](https://github.com/DK22Pac/plugin-sdk) e [gta-reversed](https://github.com/gta-reversed/gta-reversed) (endereços e estruturas do GTA SA 1.0 US)
 - Requer [CLEO](https://cleo.li) e [Mod Loader](https://gtaforums.com/topic/669520-mod-loader/), de seus respectivos autores
+
+## Licença
+
+Distribuído sob a licença [MIT](LICENSE): qualquer pessoa pode usar, modificar e redistribuir o mod, desde que mantenha o aviso de copyright.
 
 GTA San Andreas é uma marca da Rockstar Games. Este é um mod de fã, sem vínculo com a Rockstar.
