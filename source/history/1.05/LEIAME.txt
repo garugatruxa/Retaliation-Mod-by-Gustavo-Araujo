@@ -12,7 +12,8 @@ COMO FUNCIONA
   - Matar um NPC comum (civil, traficante, etc.): +2 pontos.
     Policiais e membros de gangue: +1 ponto. NPCs de missao e os proprios
     cacadores NAO contam. Roubar um veiculo: +2 pontos. Explodir um veiculo: +4
-    pontos. Maximo: 50.
+    pontos. Maximo: 100 (5 estrelas vermelhas a partir de 50; de 50 a
+    100 e folga para segurar o nivel maximo ate o "calor maximo").
   - Cada nivel tem um grupo de NPCs:
       10 pts: cobradores do cassino (familia Leone) - armas fracas
       20 pts: matadores do cassino (familia Leone)

@@ -99,7 +99,7 @@ struct TierCfg {
 };
 
 static TierCfg g_tier[6];
-static int   cfgMaxPoints = 50, cfgKill = 2, cfgTheft = 2, cfgExplode = 4, cfgDecayAmount = 5, cfgDecaySec = 30;
+static int   cfgMaxPoints = 100, cfgKill = 2, cfgTheft = 2, cfgExplode = 4, cfgDecayAmount = 5, cfgDecaySec = 30;
 static int   cfgDeathPenalty = 10, cfgCountHunterKills = 0, cfgPauseOnMission = 1;
 static int   cfgShowHud = 1, cfgShowBlips = 1, cfgDebugKeys = 1, cfgFirstWaveSec = 20;
 static float cfgHudX = 12.0f, cfgHudY = 150.0f, cfgDespawnDist = 380.0f, cfgDismountDist = 30.0f;
@@ -162,7 +162,7 @@ static void IniList(const char* sec, const char* key, const char* def, int* out,
 
 static void LoadConfig()
 {
-    cfgMaxPoints       = IniInt("Points", "MaxPoints", 50);
+    cfgMaxPoints       = IniInt("Points", "MaxPoints", 100);
     cfgKill            = IniInt("Points", "KillPoints", 2);
     cfgExplode         = IniInt("Points", "ExplodePoints", 4);
     cfgTheft           = IniInt("Points", "TheftPoints", 2);
@@ -1268,6 +1268,13 @@ static void StarGlyph(float x, float y, int r, int g, int b)
     Text(x, y, "RETS1");
 }
 
+// thin black border all around, like the game's wanted stars
+static void StarOutline(float x, float y)
+{
+    static const float o[8][2] = { {-0.5f,0}, {0.5f,0}, {0,-0.45f}, {0,0.45f}, {-0.4f,-0.35f}, {0.4f,-0.35f}, {-0.4f,0.35f}, {0.4f,0.35f} };
+    for (int k = 0; k < 8; k++) StarGlyph(x + o[k][0], y + o[k][1], 0, 0, 0);
+}
+
 // one red star per level, drawn star by star in the free slots to the left
 // of the police wanted stars (same spacing as the yellow ones)
 static void DrawStars(int now, bool playing)
@@ -1283,7 +1290,7 @@ static void DrawStars(int now, bool playing)
         Cmd(0x03F0).I(1).Run();
         for (int i = 0; i < 5; i++) {
             float x = cfgStarsX - i * cfgStarStep;
-            if (cfgStarShadow) StarGlyph(x + 0.8f, cfgStarsY + 0.8f, 0, 0, 0);
+            if (cfgStarShadow) StarOutline(x, cfgStarsY);
             if (yellow) StarGlyph(x, cfgStarsY, 236, 182, 46);
             else        StarGlyph(x, cfgStarsY, cfgStarR, cfgStarG, cfgStarB);
         }
@@ -1300,7 +1307,7 @@ static void DrawStars(int now, bool playing)
     Cmd(0x03F0).I(1).Run();
     for (int i = 0; i < tier; i++) {
         float x = cfgStarsX - (first + i) * cfgStarStep;
-        if (cfgStarShadow) StarGlyph(x + 0.8f, y + 0.8f, 0, 0, 0);
+        if (cfgStarShadow) StarOutline(x, y);
         StarGlyph(x, y, cfgStarR, cfgStarG, cfgStarB);
     }
 }

@@ -38,7 +38,7 @@ Cada NPC que o CJ mata, cada carro que ele rouba ou explode aumenta a **pressão
 | Ficar 30 s sem ganhar pontos | **−5** (repete a cada 30 s) |
 | Morrer ou ser preso | **−10** |
 
-O máximo é **50 pontos**. NPCs de missão e os próprios caçadores não dão pontos, para a pressão não crescer sozinha.
+O máximo é **100 pontos**. As 5 estrelas vermelhas (nível máximo) começam em 50; de 50 a 100 é uma folga para o CJ segurar o nível máximo, e é esse tempo acima de 50 que conta para o [calor máximo](#polícia--retaliação). NPCs de missão e os próprios caçadores não dão pontos, para a pressão não crescer sozinha.
 
 ### Níveis de pressão (a cada 10 pontos)
 
@@ -51,7 +51,7 @@ O nível aparece na tela como **estrelas vermelhas**, ao lado das estrelas de pr
 | 2 | 20–29 | Matadores do cassino (família Leone) | Deagle, escopeta | Esportivos, SUVs, lowriders + motos |
 | 3 | 30–39 | Caipiras | Escopetas, rifle | Caminhonetes, motos de trilha, quadriciclo |
 | 4 | 40–49 | Máfia russa | AK-47, MP5, Uzi | SUVs, sedans + motos |
-| 5 | 50 | Triads (terno preto, San Fierro) | M4, AK-47, Spas-12 | Tuners de San Fierro + motos esportivas |
+| 5 | 50–100 | Triads (terno preto, San Fierro) | M4, AK-47, Spas-12 | Tuners de San Fierro + motos esportivas |
 
 A cada nível aumentam a quantidade de inimigos, a mira, a vida, o colete e a frequência das emboscadas.
 
@@ -87,7 +87,7 @@ Matar o piloto faz o corpo dele cair do helicóptero, que pega fogo, cai e explo
 ### Polícia × retaliação
 
 - **Limite de estrelas:** cada nível de retaliação tira 1 estrela do máximo da polícia (nível 1 = no máximo 4 estrelas ... nível 5 = o CJ não pode ser procurado). Os dois sistemas não se acumulam e o jogo não fica sobrecarregado.
-- **Calor máximo:** se o CJ ficar **3 minutos com as 5 estrelas vermelhas**, as estrelas piscam e viram amarelas. A retaliação zera e o CJ recebe **6 estrelas da polícia**. Ele só volta a ganhar retaliação depois de perder todas as estrelas de procurado, morrer ou ser preso.
+- **Calor máximo:** se o CJ ficar **3 minutos com as 5 estrelas vermelhas** (50 pontos ou mais), as estrelas piscam e viram amarelas. A retaliação zera e o CJ recebe **6 estrelas da polícia**. Ele só volta a ganhar retaliação depois de perder todas as estrelas de procurado, morrer ou ser preso.
 
 ---
 
