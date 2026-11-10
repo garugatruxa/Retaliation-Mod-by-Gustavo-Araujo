@@ -1,0 +1,5 @@
+﻿# compiled builds are published as GitHub Releases
+Builds/
+*.asi
+*.log
+__pycache__/

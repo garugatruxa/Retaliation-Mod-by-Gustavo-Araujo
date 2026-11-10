@@ -1,0 +1,34 @@
+RETALIATION v1.0 (build de teste)
+==================================
+
+Requisitos: GTA San Andreas 1.0 US, CLEO 4, Mod Loader.
+
+INSTALACAO
+  Copie a pasta "Retaliation" inteira para:  <GTA SA>\modloader\
+  Arquivos: Retaliation.asi (logica), Retaliation.cs (script CLEO que
+  chama o .asi a cada frame), Retaliation.ini (configuracao).
+
+COMO FUNCIONA
+  - Matar um NPC: +5 pontos.  Roubar um veiculo: +2 pontos.  Maximo: 50.
+  - 0-9 pts: nada acontece.
+  - 10-39 pts: cobradores da mafia (os mesmos do debito do cassino)
+    armam emboscadas, a pe ou de carro. Cada 10 pts aumenta a quantidade,
+    as armas, a mira, a armadura e a frequencia.
+  - 40-50 pts: caipiras e membros de gangues (Ballas, Vagos, Da Nang,
+    Triads, Rifa, Aztecas) com armas pesadas, vindo de varias direcoes.
+  - 5 minutos sem ganhar pontos: -10 pontos.
+  - Morrer ou ser preso: -10 pontos e os cacadores vao embora.
+  - Emboscadas pausam durante missoes e em interiores.
+
+HUD DE TESTE (canto esquerdo da tela)
+  Pontos, barra, nivel, tempo para perder pontos, cacadores ativos,
+  tempo para a proxima emboscada e o ultimo evento.
+
+TECLAS DE TESTE (DebugKeys=1 no .ini)
+  NumPad +  : +10 pontos
+  NumPad -  : -10 pontos
+  NumPad *  : forca uma emboscada agora
+
+DIAGNOSTICO
+  Retaliation.log (criado na pasta do mod) registra carregamento, pontos
+  e emboscadas. Se nada aparecer no jogo, mande esse arquivo.

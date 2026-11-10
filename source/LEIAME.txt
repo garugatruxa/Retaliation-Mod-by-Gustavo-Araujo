@@ -1,0 +1,52 @@
+RETALIATION v1.05
+=================
+
+Requisitos: GTA San Andreas 1.0 US, CLEO 4, Mod Loader.
+
+INSTALACAO
+  Copie a pasta "Retaliation 1.05" inteira para:  <GTA SA>\modloader\
+  Arquivos: Retaliation.asi (logica), Retaliation.cs (script CLEO que
+  chama o .asi a cada frame), Retaliation.ini (configuracao).
+
+COMO FUNCIONA
+  - Matar um NPC comum (civil, traficante, etc.): +2 pontos.
+    Policiais e membros de gangue: +1 ponto. NPCs de missao e os proprios
+    cacadores NAO contam. Roubar um veiculo: +2 pontos. Explodir um veiculo: +4
+    pontos. Maximo: 50.
+  - Cada nivel tem um grupo de NPCs:
+      10 pts: cobradores do cassino (familia Leone) - armas fracas
+      20 pts: matadores do cassino (familia Leone)
+      30 pts: caipiras
+      40 pts: mafia russa
+      50 pts: Triads (terno preto)
+  - Helicoptero Maverick (1 por vez): vem junto com uma emboscada, com
+    chance por nivel: 5% / 10% / 15% / 25% / 50%. Se vier, sorteia entre
+    4 atiradores nos esquis com MP5 ou 4 mercenarios descendo de rapel,
+    e com 10% de chance vem um Hunter, que atira de metralhadora e misseis.
+    Matar o piloto: o corpo cai do helicoptero, que pega fogo, cai e explode.
+  - Cada grupo usa carros do seu estilo (sedans, classicos/lowriders,
+    esportivos, SUVs, caminhonetes, tuners) e motos com piloto + garupa.
+  - As emboscadas chegam aos poucos e de longe: primeiro grupos de 2 a pe,
+    depois carros bem mais longe (210-290 m), espalhados ao longo do tempo
+    entre uma emboscada e outra.
+  - No maximo 16 inimigos ao mesmo tempo, contando o helicoptero.
+    Inimigos que ficam muito longe ou demoram demais (150 s) para chegar
+    no CJ sao removidos, liberando espaco para os proximos.
+  - Policia: cada 10 pts tira 1 estrela do maximo
+      (10 = max 4, 20 = 3, 30 = 2, 40 = 1, 50 = nao pode ser procurado).
+    Nao vale durante missoes.
+  - 30 segundos sem ganhar pontos: -5 pontos (repete a cada 30 s).
+  - 3 minutos com as 5 estrelas vermelhas: a retaliacao vira policia.
+    As estrelas vermelhas piscam, viram amarelas, os pontos zeram, o CJ ganha 6 estrelas de procurado e so volta a
+    ganhar retaliacao depois de perder todas as estrelas, morrer ou ser preso.
+  - Morrer ou ser preso: -10 pontos e os cacadores vao embora.
+  - Emboscadas pausam durante missoes e em interiores.
+
+INDICADOR NA TELA
+  O nivel de retaliacao aparece como estrelas VERMELHAS ao lado das
+  estrelas de procurado (1 a 5). Elas piscam quando vem uma emboscada.
+  Posicao, cor e tamanho ficam na secao [Stars] do .ini.
+
+DIAGNOSTICO
+  Retaliation.log (criado na pasta do mod) registra carregamento, pontos
+  e emboscadas. Se nada aparecer no jogo, mande esse arquivo.

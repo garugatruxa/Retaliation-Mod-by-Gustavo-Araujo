@@ -1,0 +1,45 @@
+RETALIATION v1.03 (build de teste)
+===================================
+
+Requisitos: GTA San Andreas 1.0 US, CLEO 4, Mod Loader.
+
+INSTALACAO
+  Copie a pasta "Retaliation 1.03" inteira para:  <GTA SA>\modloader\
+  Arquivos: Retaliation.asi (logica), Retaliation.cs (script CLEO que
+  chama o .asi a cada frame), Retaliation.ini (configuracao).
+
+COMO FUNCIONA
+  - Matar um NPC comum (civil, traficante, etc.): +5 pontos.
+    Policiais, membros de gangue, NPCs de missao e os proprios cacadores
+    NAO contam. Roubar um veiculo: +2 pontos. Maximo: 50.
+  - Cada nivel tem um grupo de NPCs:
+      10 pts: cobradores do cassino (familia Leone) - armas fracas
+      20 pts: matadores do cassino (familia Leone)
+      30 pts: caipiras
+      40 pts: mafia russa
+      50 pts: Triads (terno preto) + helicoptero Maverick (1 por vez),
+              sorteado entre: 4 atiradores nos esquis com MP5, ou
+              4 mercenarios descendo de rapel perto de voce.
+              Matar o piloto derruba o helicoptero, que explode.
+  - As emboscadas chegam em fila e de longe: primeiro grupos a pe,
+    depois carros mais longe ainda, alguns segundos entre cada um.
+  - Policia: cada 10 pts tira 1 estrela do maximo
+      (10 = max 4, 20 = 3, 30 = 2, 40 = 1, 50 = nao pode ser procurado).
+    Nao vale durante missoes.
+  - 30 segundos sem ganhar pontos: -5 pontos (repete a cada 30 s).
+  - Morrer ou ser preso: -10 pontos e os cacadores vao embora.
+  - Emboscadas pausam durante missoes e em interiores.
+
+MENU DE TESTE (F8 abre/fecha; comeca fechado)
+  Mostra pontos, barra, nivel, tempo para perder pontos, cacadores ativos,
+  limite de estrelas e a proxima emboscada.
+  Com o menu aberto:
+    Seta esquerda : diminui 1 nivel (-10 pontos)
+    Seta direita  : aumenta 1 nivel (+10 pontos)
+    Seta p/ cima  : forca uma emboscada agora
+  Com o menu fechado, so aparecem os avisos rapidos (+5, emboscada...).
+  Teclas e tamanho (Scale) podem ser trocados no .ini.
+
+DIAGNOSTICO
+  Retaliation.log (criado na pasta do mod) registra carregamento, pontos
+  e emboscadas. Se nada aparecer no jogo, mande esse arquivo.
