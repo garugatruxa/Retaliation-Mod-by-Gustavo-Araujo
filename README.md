@@ -13,6 +13,7 @@ Cada NPC que o CJ mata, cada carro que ele rouba ou explode aumenta a **pressão
 - [Como funciona](#como-funciona)
 - [Requisitos](#requisitos)
 - [Guia de instalação](#guia-de-instalação)
+- [Presets de dificuldade e desempenho](#presets-de-dificuldade-e-desempenho)
 - [Configuração (`Retaliation.ini`)](#configuração-retaliationini)
 - [Histórico de versões](#histórico-de-versões)
 - [Problemas conhecidos](#problemas-conhecidos)
@@ -24,7 +25,7 @@ Cada NPC que o CJ mata, cada carro que ele rouba ou explode aumenta a **pressão
 
 ## Como funciona
 
-*(Descrição da versão mais recente, a 1.05.)*
+*(Descrição da versão mais recente, a 1.06.)*
 
 ### Pontos de retaliação
 
@@ -123,8 +124,8 @@ O mod verifica a versão do jogo ao iniciar. Se não for a 1.0 US, ele se desati
 ## Guia de instalação
 
 1. **Prepare o jogo:** GTA SA na versão **1.0 US**, com **CLEO 4** e **Mod Loader** instalados. Se você já usa mods CLEO pelo Mod Loader, está tudo pronto.
-2. **Baixe** o arquivo `Retaliation_v1.05.zip` na aba [Releases](../../releases) (ou outra versão, se preferir).
-3. **Extraia** o `.zip`. Dentro dele há uma pasta `Retaliation` com:
+2. **Baixe** o arquivo `Retaliation_v1.06.zip` na aba [Releases](../../releases) (ou outra versão, se preferir).
+3. **Extraia** o `.zip`. Dentro dele há a pasta `Retaliation` (o mod) e a pasta `Presets` (opcional, veja abaixo). A pasta `Retaliation` tem:
    - `Retaliation.asi`: a lógica do mod;
    - `Retaliation.cs`: o script CLEO que chama o `.asi` a cada frame;
    - `Retaliation.ini`: as configurações;
@@ -142,6 +143,29 @@ O mod verifica a versão do jogo ao iniciar. Se não for a 1.0 US, ele se desati
 **Desinstalando:** apague a pasta `modloader\Retaliation`.
 
 > **Dica:** não deixe duas versões do Retaliation no modloader ao mesmo tempo. Elas usam o mesmo opcode e rodariam em dobro.
+
+---
+
+## Presets de dificuldade e desempenho
+
+O padrão do mod é o **mais difícil e o mais pesado**: até 16 inimigos, muitas emboscadas, helicópteros e tanque frequentes. Para jogos mais leves ou PCs mais modestos, o download traz a pasta **`Presets`**, com 6 presets prontos. Para usar, copie **no máximo um** `Dificuldade.ini` e **um** `Desempenho.ini` para `modloader\Retaliation\`.
+
+| Dificuldade | Inimigos por emboscada (nível 1 → 6) | Mira | Intervalo | Helicóptero (nível 5) | Tanque |
+|---|---|---|---|---|---|
+| **Fácil** | 2 → 7 | 15 → 60 | 60–70 s | 15% | 8% |
+| **Médio** | 3 → 10 | 22 → 72 | 50–55 s | 30% | 15% |
+| **Difícil** (padrão) | 4 → 14 | 30 → 85 | 45 s | 50% | 25% |
+
+| Desempenho | Máx. inimigos juntos | Despawn | Carros spawnam a | 2 helicópteros |
+|---|---|---|---|---|
+| **PC Fraco** | 10 | 280 m | 180–230 m | desligado |
+| **Intermediário** | 13 | 330 m | 200–260 m | conforme dificuldade |
+| **PC Forte** (padrão) | 16 | 380 m | 210–290 m | conforme dificuldade |
+
+- Os presets podem ser combinados, por exemplo **Difícil + PC Fraco**.
+- O que está num preset substitui o valor do `Retaliation.ini`. Os arquivos são comentados, então dá para editar à vontade.
+- Para voltar ao padrão, apague `Dificuldade.ini` / `Desempenho.ini` da pasta do mod.
+- O `Retaliation.log` mostra qual preset foi carregado.
 
 ---
 
@@ -171,7 +195,12 @@ Tudo pode ser ajustado no `Retaliation.ini`. As mudanças valem depois de reinic
 
 Todas as versões estão na aba [Releases](../../releases). O código de cada uma está em [`source/history/`](source/history).
 
-### v1.05 — atual
+### v1.06 — atual
+
+- **Presets de dificuldade** (Fácil / Médio / Difícil) e **de desempenho** (PC Fraco / Intermediário / PC Forte), em pastas prontas no download. Basta copiar um `.ini` para a pasta do mod.
+- **Correção de crash:** ao remover o destroço de um helicóptero derrubado a tiro, o piloto morto ainda ficava marcado como "dentro" dele e o jogo quebrava. Agora todo NPC ligado ao veículo é removido antes.
+
+### v1.05
 
 Comparado à v1.04:
 
@@ -258,6 +287,7 @@ O código está em [`source/`](source):
 | `Retaliation.cpp` | Toda a lógica, como plugin ASI (C++, 32 bits) |
 | `make_cs.py` | Gera o `Retaliation.cs` (script CLEO montado byte a byte, sem Sanny Builder) |
 | `make_txd.py` | Gera o `retstar.txd` (textura da estrela vermelha) |
+| `make_presets.py` | Gera as pastas de presets de dificuldade e desempenho |
 | `Retaliation.ini` / `LEIAME.txt` | Configuração e leia-me distribuídos com o mod |
 | `build.ps1` | Script de build |
 | `history/<versão>/` | Código de cada versão publicada |
@@ -265,10 +295,10 @@ O código está em [`source/`](source):
 **Ferramentas:** [llvm-mingw](https://github.com/mstorsjo/llvm-mingw) (compilador `i686-w64-mingw32-g++`) e Python 3.
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File source\build.ps1 -Version 1.05
+powershell -ExecutionPolicy Bypass -File source\build.ps1 -Version 1.06
 ```
 
-O resultado sai em `Builds\Retaliation 1.05\`.
+O resultado sai em `Builds\Retaliation 1.06\` e os presets em `Builds\Retaliation 1.06 - Presets\`.
 
 **Como funciona por dentro:** o `.asi` registra um opcode CLEO próprio (`1FA5`), que o `.cs` chama a cada frame. Os comandos do jogo (criar NPCs, carros, blips, texto) são executados por um `CRunningScript` privado, a mesma técnica que o plugin-sdk usa. Abates e roubos são detectados lendo os pools de NPCs e veículos do jogo.
 

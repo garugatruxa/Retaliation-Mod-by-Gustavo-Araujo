@@ -27,10 +27,19 @@ if (Test-Path "$SrcDir\make_txd.py") {
 Copy-Item "$SrcDir\Retaliation.ini" "$out\Retaliation.ini" -Force
 Copy-Item "$SrcDir\LEIAME.txt" "$out\LEIAME.txt" -Force
 
+# preset folders (difficulty / performance) shipped next to the mod folder
+if (Test-Path "$SrcDir\make_presets.py") {
+    $presets = Join-Path $root "Builds\$OutName - Presets"
+    if (Test-Path $presets) { Remove-Item -Recurse -Force $presets }
+    & python "$SrcDir\make_presets.py" $presets
+    if ($LASTEXITCODE -ne 0) { throw "presets build failed" }
+}
+
 # snapshot of the source used for this version
 $hist = Join-Path $PSScriptRoot "history\$Version"
 if ((Resolve-Path $SrcDir).Path -ne (New-Item -ItemType Directory -Force $hist).FullName) {
     Copy-Item "$SrcDir\Retaliation.cpp", "$SrcDir\make_cs.py", "$SrcDir\Retaliation.ini", "$SrcDir\LEIAME.txt" $hist -Force
     if (Test-Path "$SrcDir\make_txd.py") { Copy-Item "$SrcDir\make_txd.py" $hist -Force }
+    if (Test-Path "$SrcDir\make_presets.py") { Copy-Item "$SrcDir\make_presets.py" $hist -Force }
 }
 Write-Host "Build OK -> $out"

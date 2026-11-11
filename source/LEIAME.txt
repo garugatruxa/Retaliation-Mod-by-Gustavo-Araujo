@@ -1,10 +1,10 @@
-RETALIATION v1.05
+RETALIATION v1.06
 =================
 
 Requisitos: GTA San Andreas 1.0 US, CLEO 4, Mod Loader.
 
 INSTALACAO
-  Copie a pasta "Retaliation 1.05" inteira para:  <GTA SA>\modloader\
+  Copie a pasta "Retaliation" inteira para:  <GTA SA>\modloader\
   Arquivos: Retaliation.asi (logica), Retaliation.cs (script CLEO que
   chama o .asi a cada frame), Retaliation.ini (configuracao) e
   retstar.txd (imagem da estrela vermelha).
@@ -57,6 +57,13 @@ INDICADOR NA TELA
   O nivel de retaliacao aparece como estrelas VERMELHAS numa fileira
   logo abaixo das estrelas de procurado (1 a 5). Elas piscam quando vem uma emboscada.
   Posicao, cor e tamanho ficam na secao [Stars] do .ini.
+
+PRESETS (DIFICULDADE E DESEMPENHO)
+  Na pasta "Presets" do download ha 6 presets. Copie no maximo um
+  Dificuldade.ini e um Desempenho.ini para a pasta do mod:
+    Dificuldade - Facil / Medio / Dificil
+    Desempenho  - PC Fraco (10 inimigos) / Intermediario (13) / PC Forte (16)
+  Sem preset = Dificil + PC Forte (padrao). Apague o arquivo para voltar.
 
 DESEMPENHO
   Se algum mod de armas soltar dezenas de carregadores de uma vez ao

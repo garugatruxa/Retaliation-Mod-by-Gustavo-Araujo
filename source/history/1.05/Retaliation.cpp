@@ -511,6 +511,22 @@ static void SafeDeleteCar(int car)
         if (!IsHunterHandle(handle)) { foreign = true; continue; }
         Cmd(0x009B).I(handle).Run();                             // DELETE_CHAR (also leaves the seat)
     }
+    // peds that still "belong" to this vehicle without a seat (e.g. the pilot
+    // of a heli that was shot down: flagged in-vehicle, seat already cleared)
+    if (pp) {
+        int n = pp->size; if (n > MAX_SLOTS) n = MAX_SLOTS;
+        for (int i = 0; i < n; i++) {
+            uint8_t b = pp->byteMap[i];
+            if (b & 0x80) continue;
+            uint8_t* ped = pp->objects + i * PED_SIZE;
+            if (*(uint8_t**)(ped + PED_VEHICLE) != v) continue;
+            if (ped == player) { foreign = true; continue; }
+            int handle = (i << 8) | b;
+            if (IsHunterHandle(handle)) Cmd(0x009B).I(handle).Run();
+            else if (*(uint32_t*)(ped + 0x46C) & 0x100) foreign = true;   // someone else flagged inside it
+            // (a stale "last vehicle" pointer on a ped outside is cleared by the game itself)
+        }
+    }
     for (int k = 0; k < 9 && !foreign; k++) if (*(uint8_t**)(v + 0x460 + k * 4)) foreign = true;
     if (foreign) { Cmd(0x01C3).I(car).Run(); return; }          // someone else inside: just release it
     Cmd(0x00A6).I(car).Run();                                    // DELETE_CAR

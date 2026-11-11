@@ -154,23 +154,58 @@ static int ParseList(const char* s, int* out, int max)
     return n;
 }
 
-static int   IniInt(const char* sec, const char* key, int def) { return GetPrivateProfileIntA(sec, key, def, g_iniPath); }
+// Settings are read in layers: the Performance preset, then the Difficulty
+// preset, then Retaliation.ini. A preset file only lists the values it changes.
+static char g_perfPath[MAX_PATH], g_diffPath[MAX_PATH];
+
+// returns true and fills buf if the key exists in any layer
+static bool IniRaw(const char* sec, const char* key, char* buf, int size)
+{
+    const char* files[3] = { g_perfPath, g_diffPath, g_iniPath };
+    for (int i = 0; i < 3; i++) {
+        if (!files[i][0]) continue;
+        GetPrivateProfileStringA(sec, key, "\x01", buf, size, files[i]);   // default "\x01" = key missing
+        if (!(buf[0] == 1 && buf[1] == 0)) return true;
+    }
+    return false;
+}
+static int IniInt(const char* sec, const char* key, int def)
+{
+    char buf[64];
+    if (!IniRaw(sec, key, buf, sizeof(buf))) return def;
+    return (int)strtol(buf, 0, 10);
+}
 static float IniFloat(const char* sec, const char* key, float def)
 {
-    char buf[64], d[64]; sprintf(d, "%f", def);
-    GetPrivateProfileStringA(sec, key, d, buf, sizeof(buf), g_iniPath);
+    char buf[64];
+    if (!IniRaw(sec, key, buf, sizeof(buf))) return def;
     return (float)atof(buf);
 }
 static void IniList(const char* sec, const char* key, const char* def, int* out, int max, int* n)
 {
     char buf[512];
-    GetPrivateProfileStringA(sec, key, def, buf, sizeof(buf), g_iniPath);
+    if (!IniRaw(sec, key, buf, sizeof(buf))) strcpy(buf, def);
     *n = ParseList(buf, out, max);
     if (*n == 0) *n = ParseList(def, out, max);
 }
 
+// Optional preset files dropped into the mod folder (copied from the
+// "Presets" folders of the download): Dificuldade.ini and Desempenho.ini.
+// Without them the mod runs at its default: Dificil + PC Forte.
+static void SelectPresets()
+{
+    char name[64];
+    sprintf(g_diffPath, "%sDificuldade.ini", g_dir);
+    sprintf(g_perfPath, "%sDesempenho.ini", g_dir);
+    if (GetFileAttributesA(g_diffPath) == INVALID_FILE_ATTRIBUTES) { g_diffPath[0] = 0; Log("difficulty preset: default (Dificil)"); }
+    else { GetPrivateProfileStringA("Preset", "Name", "?", name, sizeof(name), g_diffPath); Log("difficulty preset: %s", name); }
+    if (GetFileAttributesA(g_perfPath) == INVALID_FILE_ATTRIBUTES) { g_perfPath[0] = 0; Log("performance preset: default (PC Forte)"); }
+    else { GetPrivateProfileStringA("Preset", "Name", "?", name, sizeof(name), g_perfPath); Log("performance preset: %s", name); }
+}
+
 static void LoadConfig()
 {
+    SelectPresets();
     cfgMaxPoints       = IniInt("Points", "MaxPoints", 100);
     cfgKill            = IniInt("Points", "KillPoints", 4);
     cfgExplode         = IniInt("Points", "ExplodePoints", 4);
@@ -510,6 +545,22 @@ static void SafeDeleteCar(int car)
         int handle = (idx << 8) | pp->byteMap[idx];
         if (!IsHunterHandle(handle)) { foreign = true; continue; }
         Cmd(0x009B).I(handle).Run();                             // DELETE_CHAR (also leaves the seat)
+    }
+    // peds that still "belong" to this vehicle without a seat (e.g. the pilot
+    // of a heli that was shot down: flagged in-vehicle, seat already cleared)
+    if (pp) {
+        int n = pp->size; if (n > MAX_SLOTS) n = MAX_SLOTS;
+        for (int i = 0; i < n; i++) {
+            uint8_t b = pp->byteMap[i];
+            if (b & 0x80) continue;
+            uint8_t* ped = pp->objects + i * PED_SIZE;
+            if (*(uint8_t**)(ped + PED_VEHICLE) != v) continue;
+            if (ped == player) { foreign = true; continue; }
+            int handle = (i << 8) | b;
+            if (IsHunterHandle(handle)) Cmd(0x009B).I(handle).Run();
+            else if (*(uint32_t*)(ped + 0x46C) & 0x100) foreign = true;   // someone else flagged inside it
+            // (a stale "last vehicle" pointer on a ped outside is cleared by the game itself)
+        }
     }
     for (int k = 0; k < 9 && !foreign; k++) if (*(uint8_t**)(v + 0x460 + k * 4)) foreign = true;
     if (foreign) { Cmd(0x01C3).I(car).Run(); return; }          // someone else inside: just release it
@@ -1810,7 +1861,7 @@ BOOL WINAPI DllMain(HINSTANCE inst, DWORD reason, LPVOID)
         sprintf(g_iniPath, "%sRetaliation.ini", g_dir);
         sprintf(g_logPath, "%sRetaliation.log", g_dir);
         DeleteFileA(g_logPath);
-        Log("Retaliation v1.05 loaded from %s", g_dir);
+        Log("Retaliation v1.06 loaded from %s", g_dir);
         LoadConfig();
         g_rng = GetTickCount() | 1;
         if (!TryRegister()) CreateThread(0, 0, WaitCleoThread, 0, 0, 0);
