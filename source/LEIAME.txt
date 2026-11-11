@@ -65,10 +65,6 @@ PRESETS (DIFICULDADE E DESEMPENHO)
     Desempenho  - PC Fraco (10 inimigos) / Intermediario (13) / PC Forte (16)
   Sem preset = Dificil + PC Forte (padrao). Apague o arquivo para voltar.
 
-DESEMPENHO
-  Se algum mod de armas soltar dezenas de carregadores de uma vez ao
-  recarregar, o Retaliation apaga o excesso na hora (secao [Performance]).
-
 DIAGNOSTICO
   Retaliation.log (criado na pasta do mod) registra carregamento, pontos
   e emboscadas. Se nada aparecer no jogo, mande esse arquivo.

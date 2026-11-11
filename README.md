@@ -99,7 +99,7 @@ No nível 6 ou maior, cada emboscada tem **25% de chance** (mais o bônus de 70+
 
 - No máximo **16 inimigos** ao mesmo tempo.
 - Inimigos que não chegam até o CJ, ou que ficam longe demais, são removidos.
-- Se um mod de armas soltar dezenas de carregadores de uma vez, o Retaliation apaga o excesso (seção `[Performance]` do `.ini`).
+- Para PCs mais modestos, use o preset **PC Fraco** (até 10 inimigos) ou **Intermediário** (até 13). Veja [Presets](#presets-de-dificuldade-e-desempenho).
 
 ### Polícia × retaliação
 
@@ -178,14 +178,14 @@ Tudo pode ser ajustado no `Retaliation.ini`. As mudanças valem depois de reinic
 | `[Points]` | Pontos por ação, máximo, perda com o tempo e penalidade por morte |
 | `[Wanted]` | Limite de estrelas da polícia por nível |
 | `[General]` | Pausa em missão, blips no radar, distâncias, intervalo entre grupos, limite total de inimigos e tempo limite dos caçadores |
-| `[Performance]` | Proteção contra montes de carregadores e munição dos caçadores |
+| `[Performance]` | Opções avançadas: munição dos caçadores e limpeza automática de objetos pequenos acumulados |
 | `[Stars]` | Posição, tamanho e cor das estrelas vermelhas |
 | `[MaxHeat]` | Tempo com 5 estrelas vermelhas e estrelas da polícia dadas no "calor máximo" |
 | `[Tank]` | Chance, alcance e cadência do tanque do nível 6 |
 | `[Helicopter]` | Chance por nível, tipos (Hunter / rapel / atiradores), armas e comportamento |
 | `[Tier1]` … `[Tier6]` | Skins, armas, veículos, quantidade de inimigos, mira, vida, colete e distâncias de cada nível |
 
-**Estrelas fora do lugar?** Os valores padrão foram calibrados em 1920×1080 com o HUD original. Se você usa outra resolução ou um mod de HUD, ajuste `X`, `Y`, `StarSpacing`, `ScaleX` e `ScaleY` na seção `[Stars]`.
+**Estrelas fora do lugar?** Os valores padrão foram calibrados em 1920×1080 com o HUD original do jogo. Em outra resolução, ajuste `X`, `Y`, `StarSpacing`, `ScaleX` e `ScaleY` na seção `[Stars]`.
 
 **Diagnóstico:** o mod grava o arquivo `Retaliation.log` na própria pasta, com pontos, emboscadas e helicópteros. Se algo der errado, ele ajuda a descobrir o que aconteceu.
 
@@ -225,13 +225,12 @@ Comparado à v1.04:
 - **2 helicópteros ao mesmo tempo:** com 90+ pontos, 25% de chance, cada um com o tipo sorteado (podem ser iguais).
 - A partir de 70 pontos, helicóptero e tanque ganham **+10% de chance a cada 10 pontos**.
 - **Piloto ejetado:** ao morrer, o corpo cai do helicóptero antes da explosão. O marcador some quando o helicóptero é derrubado.
-- **Correção da explosão infinita** (conflito com o mod *Fire On Driver*): o piloto não pega fogo, o destroço fica à prova de dano e é removido logo depois de cair.
+- **Correção da explosão infinita do helicóptero:** o piloto é ejetado e não pega fogo, e o destroço fica à prova de dano e é removido logo depois de cair.
 
 **Tanque (novo)**
 - No nível 6 ou maior, **25% de chance de um tanque Rhino** a cada emboscada. Ele persegue o CJ e dispara projéteis do canhão mirando nele.
 
 **Desempenho e estabilidade**
-- **Proteção contra a "enxurrada" de carregadores:** quando um mod de armas solta dezenas de pentes de uma vez, o excesso é apagado na hora.
 - Caçadores com munição realista (600) em vez de 9999.
 - Caçadores muito longe, ou que não chegam até o CJ em 150 s, são removidos e liberam espaço.
 - Veículos dos caçadores são apagados com segurança: quem estiver dentro sai antes. Isso corrige um crash depois que o destroço de helicóptero era removido.
@@ -268,13 +267,10 @@ Comparado à v1.04:
 
 ## Problemas conhecidos
 
-- **Fire On Driver:** esse mod põe fogo no motorista de todo veículo que explode, e isso fazia o destroço do helicóptero explodir sem parar. A v1.05 contorna o problema: o piloto é ejetado antes da explosão, não pega fogo, e o destroço fica à prova de dano até ser removido.
-- **Carregadores do SanVive Weapons System:** em alguns NPCs, esse mod solta dezenas de pentes de uma vez ao recarregar. O Retaliation apaga o excesso automaticamente, mas o problema em si é do outro mod.
 - **Tanque:** o tiro sai na direção do CJ, mas a torre do Rhino não gira visualmente. O projétil é o míssil do jogo.
 - **Rapel, mísseis e estrela em imagem** usam funções internas do jogo 1.0 US. Em outras versões do executável o mod não roda, de propósito.
-- **Estrelas vermelhas:** calibradas para 1920×1080. Em outras resoluções ou com mods de HUD, ajuste a seção `[Stars]`.
+- **Estrelas vermelhas:** calibradas para 1920×1080. Em outras resoluções, ajuste a seção `[Stars]`.
 - **Pontos não são salvos no save:** ao carregar um jogo, a retaliação começa do zero.
-- Se o jogo continuar aberto em segundo plano depois de fechado, finalize o `gta-sa.exe` no Gerenciador de Tarefas antes de atualizar o mod.
 
 ---
 
