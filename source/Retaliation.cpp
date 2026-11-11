@@ -529,44 +529,27 @@ static void ReleaseHunter(Hunter& h, bool exists)
 static bool OnScreen(float x, float y, float z);
 
 // delete it right away when the player can't see it (frees memory), otherwise let the game clean it up
-// Deletes one of our vehicles safely: our own peds still inside are deleted
-// first (a ped left in a deleted vehicle crashes the game - v1.05 heli wreck
-// crash). If someone else is inside (CJ, a cop...), it is only released.
+// Deletes one of our vehicles only when nobody at all is linked to it.
+// If any ped is still in it (seated, or flagged "in vehicle" like the pilot
+// of a heli that was shot down), the vehicle is only released and the game
+// cleans it up later together with its occupants. Peds are never deleted
+// here: other scripts may still be tracking them (v1.06 crash).
 static void SafeDeleteCar(int car)
 {
     uint8_t* v = VehPtr(car);
     if (!v) return;
+    bool occupied = false;
+    for (int k = 0; k < 9; k++) if (*(uint8_t**)(v + 0x460 + k * 4)) occupied = true;   // driver + 8 passengers
     CPool* pp = *(CPool**)ADDR_PED_POOL;
-    uint8_t* player = *(uint8_t**)ADDR_PLAYER_PED;
-    bool foreign = false;
-    for (int k = 0; k < 9; k++) {
-        uint8_t* ped = *(uint8_t**)(v + 0x460 + k * 4);        // driver, then 8 passengers
-        if (!ped) continue;
-        if (ped == player || !pp) { foreign = true; continue; }
-        int idx = (int)((ped - pp->objects) / PED_SIZE);
-        if (idx < 0 || idx >= pp->size) { foreign = true; continue; }
-        int handle = (idx << 8) | pp->byteMap[idx];
-        if (!IsHunterHandle(handle)) { foreign = true; continue; }
-        Cmd(0x009B).I(handle).Run();                             // DELETE_CHAR (also leaves the seat)
-    }
-    // peds that still "belong" to this vehicle without a seat (e.g. the pilot
-    // of a heli that was shot down: flagged in-vehicle, seat already cleared)
-    if (pp) {
+    if (!occupied && pp) {
         int n = pp->size; if (n > MAX_SLOTS) n = MAX_SLOTS;
-        for (int i = 0; i < n; i++) {
-            uint8_t b = pp->byteMap[i];
-            if (b & 0x80) continue;
+        for (int i = 0; i < n && !occupied; i++) {
+            if (pp->byteMap[i] & 0x80) continue;
             uint8_t* ped = pp->objects + i * PED_SIZE;
-            if (*(uint8_t**)(ped + PED_VEHICLE) != v) continue;
-            if (ped == player) { foreign = true; continue; }
-            int handle = (i << 8) | b;
-            if (IsHunterHandle(handle)) Cmd(0x009B).I(handle).Run();
-            else if (*(uint32_t*)(ped + 0x46C) & 0x100) foreign = true;   // someone else flagged inside it
-            // (a stale "last vehicle" pointer on a ped outside is cleared by the game itself)
+            if (*(uint8_t**)(ped + PED_VEHICLE) == v && (*(uint32_t*)(ped + 0x46C) & 0x100)) occupied = true;
         }
     }
-    for (int k = 0; k < 9 && !foreign; k++) if (*(uint8_t**)(v + 0x460 + k * 4)) foreign = true;
-    if (foreign) { Cmd(0x01C3).I(car).Run(); return; }          // someone else inside: just release it
+    if (occupied) { Cmd(0x01C3).I(car).Run(); return; }        // MARK_CAR_AS_NO_LONGER_NEEDED
     Cmd(0x00A6).I(car).Run();                                    // DELETE_CAR
 }
 
@@ -1312,7 +1295,8 @@ static void UpdateHeliSlot(int now, int playerChar, float px, float py, float pz
     if (pi < 0 || CharDead(g_h[pi].ped)) {
         // pilot killed: throw his body out (so no mod can set a "driver" on fire
         // when it explodes), then engine off, fire, and let it fall
-        if (pi >= 0) EjectDeadPilot(pi);
+        // (the dead pilot stays in the seat: deleting peds that other scripts may
+        //  be tracking - kill cams etc. - crashed the game in v1.06)
         H.crashing = true; H.crashStart = now;
         if (H.blip) { Cmd(0x0164).I(H.blip).Run(); H.blip = 0; }
         Cmd(0x0918).I(H.car).I(0).Run();

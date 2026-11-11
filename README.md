@@ -89,7 +89,7 @@ Quando vem, o tipo de cada helicóptero é sorteado:
 - **Maverick com atiradores**: 4 mercenários nos esquis, 2 de cada lado, atirando de MP5.
 - **Maverick com rapel**: o helicóptero para perto do CJ e 4 mercenários descem de corda, com a mesma animação da SWAT.
 
-Matar o piloto faz o corpo dele cair do helicóptero, que pega fogo, cai e explode.
+Matar o piloto faz o helicóptero pegar fogo, cair e explodir.
 
 ### Tanque
 
@@ -205,6 +205,7 @@ Todas as versões estão na aba [Releases](../../releases). O código de cada um
 
 - **Presets de dificuldade** (Fácil / Médio / Difícil) e **de desempenho** (PC Fraco / Intermediário / PC Forte), em pastas prontas no download. Basta copiar um `.ini` para a pasta do mod.
 - **Extra "Ativo em Missões"** (`Missoes.ini`): faz o mod funcionar também durante as missões da história. **Por sua conta e risco:** pode quebrar missões e não há garantia de conseguir terminar a história.
+- **Correção de crash:** o mod não apaga mais NPCs mortos (como o piloto do helicóptero) enquanto outros scripts ainda podem estar acompanhando eles. Destroços com alguém dentro são liberados para o jogo limpar sozinho.
 - **Correção de crash:** ao remover o destroço de um helicóptero derrubado a tiro, o piloto morto ainda ficava marcado como "dentro" dele e o jogo quebrava. Agora todo NPC ligado ao veículo é removido antes.
 
 ### v1.05
