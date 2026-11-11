@@ -65,6 +65,11 @@ PRESETS (DIFICULDADE E DESEMPENHO)
     Desempenho  - PC Fraco (10 inimigos) / Intermediario (13) / PC Forte (16)
   Sem preset = Dificil + PC Forte (padrao). Apague o arquivo para voltar.
 
+  EXTRA - Ativo em Missoes (RISCO) -> Missoes.ini
+    Faz o mod funcionar tambem durante as missoes da historia.
+    ATENCAO: pode quebrar missoes e NAO ha garantia de conseguir
+    terminar a historia com esta opcao. Salve o jogo antes de usar.
+
 DIAGNOSTICO
   Retaliation.log (criado na pasta do mod) registra carregamento, pontos
   e emboscadas. Se nada aparecer no jogo, mande esse arquivo.

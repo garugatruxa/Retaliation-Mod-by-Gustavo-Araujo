@@ -65,7 +65,7 @@ A cada nível aumentam a quantidade de inimigos, a mira, a vida, o colete e a fr
 - Os carros perseguem o CJ e, perto dele, os inimigos descem para atacar.
 - No máximo **16 inimigos ao mesmo tempo**, contando o helicóptero.
 - Inimigos que ficam muito longe ou que demoram demais para chegar até o CJ são removidos, para abrir espaço para os próximos.
-- As emboscadas pausam durante missões da história e em interiores.
+- As emboscadas pausam durante missões da história e em interiores. *(Opcional: o preset extra "Ativo em Missões" tira a pausa das missões. Veja [Presets](#presets-de-dificuldade-e-desempenho).)*
 
 ### Helicópteros
 
@@ -167,6 +167,12 @@ O padrão do mod é o **mais difícil e o mais pesado**: até 16 inimigos, muita
 - Para voltar ao padrão, apague `Dificuldade.ini` / `Desempenho.ini` da pasta do mod.
 - O `Retaliation.log` mostra qual preset foi carregado.
 
+### Extra: ativo em missões (por sua conta e risco)
+
+Por padrão, as emboscadas **pausam durante as missões da história**, para não atrapalhá-las. A pasta `Presets\Extra - Ativo em Missoes (RISCO)` traz o `Missoes.ini`. Copiado para `modloader\Retaliation\`, ele faz o mod continuar funcionando **também durante as missões**.
+
+> ⚠️ **Atenção:** esta opção **não é suportada**. Os caçadores podem matar NPCs ou destruir veículos da missão, explodir coisas em cutscenes ou fazer a missão falhar ou travar. **Não há garantia de que seja possível terminar (zerar) a história com ela ativa.** Recomendado só para quem já zerou o jogo ou quer o caos total. **Salve o jogo antes.** Para desligar, apague o `Missoes.ini` da pasta do mod.
+
 ---
 
 ## Configuração (`Retaliation.ini`)
@@ -198,6 +204,7 @@ Todas as versões estão na aba [Releases](../../releases). O código de cada um
 ### v1.06 — atual
 
 - **Presets de dificuldade** (Fácil / Médio / Difícil) e **de desempenho** (PC Fraco / Intermediário / PC Forte), em pastas prontas no download. Basta copiar um `.ini` para a pasta do mod.
+- **Extra "Ativo em Missões"** (`Missoes.ini`): faz o mod funcionar também durante as missões da história. **Por sua conta e risco:** pode quebrar missões e não há garantia de conseguir terminar a história.
 - **Correção de crash:** ao remover o destroço de um helicóptero derrubado a tiro, o piloto morto ainda ficava marcado como "dentro" dele e o jogo quebrava. Agora todo NPC ligado ao veículo é removido antes.
 
 ### v1.05

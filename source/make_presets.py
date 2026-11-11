@@ -95,6 +95,34 @@ def main(out):
             t += f"\n[Tier{i}]\nMaxActive={a}\nCarMinDist={cmin}\nCarMaxDist={cmax}\n"
         write(os.path.join(out, f"Desempenho - {key}", "Desempenho.ini"), t)
 
+    t = """; =============================================================
+;  Retaliation v1.06 - EXTRA: ATIVO EM MISSOES   ( USE POR SUA CONTA E RISCO )
+; =============================================================
+;
+;  !!! ATENCAO !!!
+;  Com este arquivo, as emboscadas, os helicopteros e o tanque continuam
+;  vindo DURANTE AS MISSOES DA HISTORIA. Isso NAO E SUPORTADO:
+;    - missoes podem falhar ou travar (cacadores matando NPCs ou veiculos
+;      da missao, explosoes em cutscenes, alvos destruidos antes da hora...)
+;    - NAO HA GARANTIA de que seja possivel terminar (zerar) a historia
+;      com esta opcao ativa.
+;  Recomendado so para quem ja zerou o jogo ou quer o caos total.
+;  SALVE O JOGO ANTES de usar.
+;
+;  COMO USAR: copie este arquivo (Missoes.ini) para:
+;     <GTA SA>\\modloader\\Retaliation\\
+;  Para desligar, apague Missoes.ini da pasta do mod.
+;  Pode ser usado junto com qualquer preset de dificuldade/desempenho.
+; =============================================================
+
+[Preset]
+Name=Ativo em Missoes
+
+[General]
+PauseSpawnsOnMission=0      ; 0 = o mod continua funcionando durante as missoes
+"""
+    write(os.path.join(out, "Extra - Ativo em Missoes (RISCO)", "Missoes.ini"), t)
+
     readme = """PRESETS DO RETALIATION v1.06
 =============================
 
@@ -111,7 +139,13 @@ arquivo .ini de dentro da pasta para a pasta do mod:
       limite total de inimigos (10 / 13 / 16), limite por nivel,
       distancias de spawn e despawn e limpeza de carregadores.
 
-Sem nenhum preset copiado, o mod roda como Dificil + PC Forte (o padrao).
+  Extra - Ativo em Missoes (RISCO)   ->  Missoes.ini
+      faz o mod funcionar TAMBEM durante as missoes da historia.
+      ATENCAO: pode quebrar missoes e NAO ha garantia de conseguir
+      terminar a historia com esta opcao. Salve antes de usar.
+
+Sem nenhum preset copiado, o mod roda como Dificil + PC Forte (o padrao)
+e fica pausado durante as missoes.
 Para voltar ao padrao, apague Dificuldade.ini / Desempenho.ini da pasta
 do mod. O Retaliation.log mostra qual preset foi carregado.
 """

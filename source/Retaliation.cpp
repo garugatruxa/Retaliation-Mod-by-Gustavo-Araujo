@@ -156,13 +156,13 @@ static int ParseList(const char* s, int* out, int max)
 
 // Settings are read in layers: the Performance preset, then the Difficulty
 // preset, then Retaliation.ini. A preset file only lists the values it changes.
-static char g_perfPath[MAX_PATH], g_diffPath[MAX_PATH];
+static char g_perfPath[MAX_PATH], g_diffPath[MAX_PATH], g_missPath[MAX_PATH];
 
 // returns true and fills buf if the key exists in any layer
 static bool IniRaw(const char* sec, const char* key, char* buf, int size)
 {
-    const char* files[3] = { g_perfPath, g_diffPath, g_iniPath };
-    for (int i = 0; i < 3; i++) {
+    const char* files[4] = { g_missPath, g_perfPath, g_diffPath, g_iniPath };
+    for (int i = 0; i < 4; i++) {
         if (!files[i][0]) continue;
         GetPrivateProfileStringA(sec, key, "\x01", buf, size, files[i]);   // default "\x01" = key missing
         if (!(buf[0] == 1 && buf[1] == 0)) return true;
@@ -201,6 +201,9 @@ static void SelectPresets()
     else { GetPrivateProfileStringA("Preset", "Name", "?", name, sizeof(name), g_diffPath); Log("difficulty preset: %s", name); }
     if (GetFileAttributesA(g_perfPath) == INVALID_FILE_ATTRIBUTES) { g_perfPath[0] = 0; Log("performance preset: default (PC Forte)"); }
     else { GetPrivateProfileStringA("Preset", "Name", "?", name, sizeof(name), g_perfPath); Log("performance preset: %s", name); }
+    sprintf(g_missPath, "%sMissoes.ini", g_dir);
+    if (GetFileAttributesA(g_missPath) == INVALID_FILE_ATTRIBUTES) g_missPath[0] = 0;
+    else Log("EXTRA: active during story missions (Missoes.ini) - missions may break");
 }
 
 static void LoadConfig()
