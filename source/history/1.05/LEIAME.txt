@@ -6,20 +6,27 @@ Requisitos: GTA San Andreas 1.0 US, CLEO 4, Mod Loader.
 INSTALACAO
   Copie a pasta "Retaliation 1.05" inteira para:  <GTA SA>\modloader\
   Arquivos: Retaliation.asi (logica), Retaliation.cs (script CLEO que
-  chama o .asi a cada frame), Retaliation.ini (configuracao).
+  chama o .asi a cada frame), Retaliation.ini (configuracao) e
+  retstar.txd (imagem da estrela vermelha).
 
 COMO FUNCIONA
-  - Matar um NPC comum (civil, traficante, etc.): +2 pontos.
-    Policiais e membros de gangue: +1 ponto. NPCs de missao e os proprios
+  - Matar um NPC civil (civil, traficante, etc.): +4 pontos.
+    Policial: +5 pontos. Membro de gangue: +2 pontos. NPCs de missao e os proprios
     cacadores NAO contam. Roubar um veiculo: +2 pontos. Explodir um veiculo: +4
-    pontos. Maximo: 100 (5 estrelas vermelhas a partir de 50; de 50 a
-    100 e folga para segurar o nivel maximo ate o "calor maximo").
+    pontos. Maximo: 100 (6 niveis/estrelas vermelhas ate 60; de 60 a
+    100 e folga para segurar o nivel maximo).
   - Cada nivel tem um grupo de NPCs:
       10 pts: cobradores do cassino (familia Leone) - armas fracas
       20 pts: matadores do cassino (familia Leone)
       30 pts: caipiras
       40 pts: mafia russa
       50 pts: Triads (terno preto)
+      60 pts: guerra total - elite de todos os grupos + 25% de chance de
+              um tanque Rhino que persegue e atira no CJ
+  - A partir de 70 pontos, helicoptero e tanque ganham +10% de chance a
+    cada 10 pontos (70 = +10%, 80 = +20%, 90 = +30%, 100 = +40%).
+  - Com 90 pontos ou mais, 25% de chance de virem 2 helicopteros juntos,
+    cada um com o tipo sorteado (podem ate ser 2 iguais).
   - Helicoptero Maverick (1 por vez): vem junto com uma emboscada, com
     chance por nivel: 5% / 10% / 15% / 25% / 50%. Se vier, sorteia entre
     4 atiradores nos esquis com MP5 ou 4 mercenarios descendo de rapel,
@@ -30,23 +37,30 @@ COMO FUNCIONA
   - As emboscadas chegam aos poucos e de longe: primeiro grupos de 2 a pe,
     depois carros bem mais longe (210-290 m), espalhados ao longo do tempo
     entre uma emboscada e outra.
+  - Uma emboscada nova a cada 45 segundos; os inimigos dela chegam aos
+    poucos durante esse tempo.
   - No maximo 16 inimigos ao mesmo tempo, contando o helicoptero.
     Inimigos que ficam muito longe ou demoram demais (150 s) para chegar
     no CJ sao removidos, liberando espaco para os proximos.
-  - Policia: cada 10 pts tira 1 estrela do maximo
-      (10 = max 4, 20 = 3, 30 = 2, 40 = 1, 50 = nao pode ser procurado).
-    Nao vale durante missoes.
-  - 30 segundos sem ganhar pontos: -5 pontos (repete a cada 30 s).
-  - 3 minutos com as 5 estrelas vermelhas: a retaliacao vira policia.
-    As estrelas vermelhas piscam, viram amarelas, os pontos zeram, o CJ ganha 6 estrelas de procurado e so volta a
-    ganhar retaliacao depois de perder todas as estrelas, morrer ou ser preso.
-  - Morrer ou ser preso: -10 pontos e os cacadores vao embora.
+  - Policia e retaliacao funcionam juntas (ate 6 estrelas amarelas e 5
+    vermelhas ao mesmo tempo).
+  - 45 segundos sem ganhar pontos: -5 pontos (repete a cada 45 s).
+  - 3 minutos com 80 pontos ou mais: a retaliacao vira policia.
+    As estrelas vermelhas piscam, viram amarelas, os pontos zeram, o CJ
+    fica com 6 estrelas de procurado e a retaliacao so volta a contar
+    pontos depois de 1 minuto.
+  - Morrer ou ser preso: perde TODAS as estrelas vermelhas (igual as
+    amarelas da policia) e os cacadores vao embora.
   - Emboscadas pausam durante missoes e em interiores.
 
 INDICADOR NA TELA
-  O nivel de retaliacao aparece como estrelas VERMELHAS ao lado das
-  estrelas de procurado (1 a 5). Elas piscam quando vem uma emboscada.
+  O nivel de retaliacao aparece como estrelas VERMELHAS numa fileira
+  logo abaixo das estrelas de procurado (1 a 5). Elas piscam quando vem uma emboscada.
   Posicao, cor e tamanho ficam na secao [Stars] do .ini.
+
+DESEMPENHO
+  Se algum mod de armas soltar dezenas de carregadores de uma vez ao
+  recarregar, o Retaliation apaga o excesso na hora (secao [Performance]).
 
 DIAGNOSTICO
   Retaliation.log (criado na pasta do mod) registra carregamento, pontos

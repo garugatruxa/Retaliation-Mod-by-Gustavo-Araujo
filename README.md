@@ -30,19 +30,19 @@ Cada NPC que o CJ mata, cada carro que ele rouba ou explode aumenta a **pressão
 
 | Ação do CJ | Pontos |
 |---|---|
-| Matar um NPC comum (civil, traficante etc.) | **+2** |
-| Matar um policial / SWAT / FBI / exército | **+1** |
-| Matar um membro de gangue (Ballas, Vagos...) | **+1** |
+| Matar um NPC civil (civil, traficante etc.) | **+4** |
+| Matar um policial / SWAT / FBI / exército | **+5** |
+| Matar um membro de gangue (Ballas, Vagos...) | **+2** |
 | Roubar um veículo | **+2** |
 | Explodir um veículo | **+4** |
-| Ficar 30 s sem ganhar pontos | **−5** (repete a cada 30 s) |
-| Morrer ou ser preso | **−10** |
+| Ficar 45 s sem ganhar pontos | **−5** (repete a cada 45 s) |
+| Morrer ou ser preso | **zera** (perde todas as estrelas vermelhas, como as da polícia) |
 
-O máximo é **100 pontos**. As 5 estrelas vermelhas (nível máximo) começam em 50; de 50 a 100 é uma folga para o CJ segurar o nível máximo, e é esse tempo acima de 50 que conta para o [calor máximo](#polícia--retaliação). NPCs de missão e os próprios caçadores não dão pontos, para a pressão não crescer sozinha.
+O máximo é **100 pontos**. As 6 estrelas vermelhas (nível máximo) começam em 60; de 60 a 100 é uma folga para o CJ segurar o nível máximo. Ficar acima de 80 pontos ativa o contador do [calor máximo](#polícia--retaliação). NPCs de missão e os próprios caçadores não dão pontos, para a pressão não crescer sozinha.
 
 ### Níveis de pressão (a cada 10 pontos)
 
-O nível aparece na tela como **estrelas vermelhas**, ao lado das estrelas de procurado da polícia (1 estrela vermelha por nível). Elas piscam quando uma emboscada está chegando.
+O nível aparece na tela como **estrelas vermelhas**, numa fileira logo abaixo das estrelas de procurado da polícia (1 estrela vermelha por nível). Elas piscam quando uma emboscada está chegando.
 
 | Nível | Pontos | Quem vem atrás do CJ | Armas | Veículos |
 |---|---|---|---|---|
@@ -51,13 +51,15 @@ O nível aparece na tela como **estrelas vermelhas**, ao lado das estrelas de pr
 | 2 | 20–29 | Matadores do cassino (família Leone) | Deagle, escopeta | Esportivos, SUVs, lowriders + motos |
 | 3 | 30–39 | Caipiras | Escopetas, rifle | Caminhonetes, motos de trilha, quadriciclo |
 | 4 | 40–49 | Máfia russa | AK-47, MP5, Uzi | SUVs, sedans + motos |
-| 5 | 50–100 | Triads (terno preto, San Fierro) | M4, AK-47, Spas-12 | Tuners de San Fierro + motos esportivas |
+| 5 | 50–59 | Triads (terno preto, San Fierro) | M4, AK-47, Spas-12 | Tuners de San Fierro + motos esportivas |
+| 6 | 60–100 | Guerra total: elite de todos os grupos | M4, AK-47, Spas-12 | SUVs, Sandking, tuners + **25% de chance de um tanque Rhino** que persegue e atira no CJ |
 
 A cada nível aumentam a quantidade de inimigos, a mira, a vida, o colete e a frequência das emboscadas.
 
 ### Emboscadas
 
 - Chegam **aos poucos e de longe**: primeiro grupos de 2 a pé (a 70–95 m), depois carros e motos ainda mais longe (210–290 m). Os grupos são espalhados ao longo do tempo até a próxima emboscada.
+- Uma emboscada nova começa a cada **45 segundos**, e os inimigos dela vão chegando aos poucos durante esse tempo.
 - Motos vêm com piloto e garupa.
 - Os carros perseguem o CJ e, perto dele, os inimigos descem para atacar.
 - No máximo **16 inimigos ao mesmo tempo**, contando o helicóptero.
@@ -66,7 +68,7 @@ A cada nível aumentam a quantidade de inimigos, a mira, a vida, o colete e a fr
 
 ### Helicópteros
 
-A cada emboscada existe uma chance de vir um helicóptero junto, sempre um por vez:
+A cada emboscada existe uma chance de vir um helicóptero junto:
 
 | Nível | Chance |
 |---|---|
@@ -75,19 +77,33 @@ A cada emboscada existe uma chance de vir um helicóptero junto, sempre um por v
 | 3 | 15% |
 | 4 | 25% |
 | 5 | 50% |
+| 6 | 50% |
+| 70+ pontos | +10% a cada 10 pontos (70 = +10%, 80 = +20%, 90 = +30%, 100 = +40%), também para o tanque |
 
-Quando vem, o tipo é sorteado:
+Com **90 pontos ou mais**, quando o helicóptero vem, há **25% de chance de virem 2 ao mesmo tempo**. O tipo de cada um é sorteado separadamente: pode ser um Hunter e um de atiradores, um de rapel e um Hunter, ou até dois iguais.
 
-- **Hunter (10%)**: helicóptero de ataque que circula o CJ e dispara rajadas de metralhadora e mísseis.
+Quando vem, o tipo de cada helicóptero é sorteado:
+
+- **Hunter (10%)**: helicóptero de ataque que circula o CJ e dispara rajadas de metralhadora (com dispersão) e mísseis.
 - **Maverick com atiradores**: 4 mercenários nos esquis, 2 de cada lado, atirando de MP5.
 - **Maverick com rapel**: o helicóptero para perto do CJ e 4 mercenários descem de corda, com a mesma animação da SWAT.
 
 Matar o piloto faz o corpo dele cair do helicóptero, que pega fogo, cai e explode.
 
+### Tanque
+
+No nível 6 ou maior, cada emboscada tem **25% de chance** (mais o bônus de 70+ pontos) de trazer um **tanque Rhino**. Ele persegue o CJ e dispara projéteis do canhão mirando nele, a cada 5 s mais ou menos e a até 110 m. Vem um tanque por vez.
+
+### Desempenho
+
+- No máximo **16 inimigos** ao mesmo tempo.
+- Inimigos que não chegam até o CJ, ou que ficam longe demais, são removidos.
+- Se um mod de armas soltar dezenas de carregadores de uma vez, o Retaliation apaga o excesso (seção `[Performance]` do `.ini`).
+
 ### Polícia × retaliação
 
-- **Limite de estrelas:** cada nível de retaliação tira 1 estrela do máximo da polícia (nível 1 = no máximo 4 estrelas ... nível 5 = o CJ não pode ser procurado). Os dois sistemas não se acumulam e o jogo não fica sobrecarregado.
-- **Calor máximo:** se o CJ ficar **3 minutos com as 5 estrelas vermelhas** (50 pontos ou mais), as estrelas piscam e viram amarelas. A retaliação zera e o CJ recebe **6 estrelas da polícia**. Ele só volta a ganhar retaliação depois de perder todas as estrelas de procurado, morrer ou ser preso.
+- **Juntas:** polícia e retaliação funcionam ao mesmo tempo. O CJ pode ter até 6 estrelas amarelas e 6 vermelhas. *(O antigo limite de estrelas por nível ainda existe como opção: `LimitWantedLevel=1` no `.ini`.)*
+- **Calor máximo:** se o CJ ficar **3 minutos com 80 pontos ou mais**, as estrelas piscam e viram amarelas: a retaliação zera, os mercenários param e o CJ fica com **6 estrelas da polícia**. Depois disso, a retaliação só volta a contar pontos após **1 minuto** de cooldown.
 
 ---
 
@@ -112,6 +128,7 @@ O mod verifica a versão do jogo ao iniciar. Se não for a 1.0 US, ele se desati
    - `Retaliation.asi`: a lógica do mod;
    - `Retaliation.cs`: o script CLEO que chama o `.asi` a cada frame;
    - `Retaliation.ini`: as configurações;
+   - `retstar.txd`: a imagem da estrela vermelha;
    - `LEIAME.txt`: o resumo do mod.
 4. **Copie a pasta `Retaliation` inteira** para dentro de:
    ```
@@ -137,10 +154,12 @@ Tudo pode ser ajustado no `Retaliation.ini`. As mudanças valem depois de reinic
 | `[Points]` | Pontos por ação, máximo, perda com o tempo e penalidade por morte |
 | `[Wanted]` | Limite de estrelas da polícia por nível |
 | `[General]` | Pausa em missão, blips no radar, distâncias, intervalo entre grupos, limite total de inimigos e tempo limite dos caçadores |
+| `[Performance]` | Proteção contra montes de carregadores e munição dos caçadores |
 | `[Stars]` | Posição, tamanho e cor das estrelas vermelhas |
 | `[MaxHeat]` | Tempo com 5 estrelas vermelhas e estrelas da polícia dadas no "calor máximo" |
+| `[Tank]` | Chance, alcance e cadência do tanque do nível 6 |
 | `[Helicopter]` | Chance por nível, tipos (Hunter / rapel / atiradores), armas e comportamento |
-| `[Tier1]` … `[Tier5]` | Skins, armas, veículos, quantidade de inimigos, mira, vida, colete e distâncias de cada nível |
+| `[Tier1]` … `[Tier6]` | Skins, armas, veículos, quantidade de inimigos, mira, vida, colete e distâncias de cada nível |
 
 **Estrelas fora do lugar?** Os valores padrão foram calibrados em 1920×1080 com o HUD original. Se você usa outra resolução ou um mod de HUD, ajuste `X`, `Y`, `StarSpacing`, `ScaleX` e `ScaleY` na seção `[Stars]`.
 
@@ -153,14 +172,40 @@ Tudo pode ser ajustado no `Retaliation.ini`. As mudanças valem depois de reinic
 Todas as versões estão na aba [Releases](../../releases). O código de cada uma está em [`source/history/`](source/history).
 
 ### v1.05 — atual
-- **HUD substituído por estrelas vermelhas** ao lado das estrelas de procurado (1 por nível), com contorno e piscando quando vem emboscada.
-- **Calor máximo:** 3 minutos com 5 estrelas vermelhas → animação (piscam e viram amarelas) → 6 estrelas da polícia e retaliação travada até o CJ despistar a polícia, morrer ou ser preso.
-- **Novo helicóptero: Hunter** (10% de chance), com metralhadora e mísseis.
-- **Piloto ejetado:** ao morrer, o corpo do piloto cai do helicóptero antes da explosão.
-- **Destroço do helicóptero à prova de dano** e removido logo depois de cair (correção do helicóptero explodindo sem parar).
-- **Policiais e membros de gangue** passam a dar 1 ponto.
-- **Remoção de caçadores travados:** inimigos muito longe, ou que não chegam até o CJ em 150 s, são removidos e liberam espaço.
-- O menu de teste (F8) foi removido.
+
+Comparado à v1.04:
+
+**Pontos e níveis**
+- **Novos pontos:** NPC civil +4, policial +5, membro de gangue +2 (roubar +2 e explodir +4 continuam).
+- **Máximo de 100 pontos** e **novo nível 6** (60 pontos): elite de todos os grupos. De 60 a 100 é folga para segurar o nível máximo.
+- Perda de pontos mais lenta: −5 a cada **45 s** sem crimes.
+- **Morrer ou ser preso zera todas as estrelas vermelhas**, como acontece com as da polícia.
+- Emboscadas a cada **45 s** em todos os níveis, com os inimigos chegando aos poucos.
+
+**Estrelas vermelhas (substituem o HUD)**
+- O painel de teste e o menu F8 saíram. O nível agora aparece como **estrelas vermelhas** numa fileira logo abaixo das estrelas da polícia.
+- As estrelas são uma **imagem própria** (`retstar.txd`), do tamanho das estrelas da polícia, com contorno preto leve.
+- Piscam quando uma emboscada está chegando.
+
+**Polícia × retaliação**
+- Polícia e retaliação agora funcionam **juntas**: até 6 estrelas amarelas e 6 vermelhas. O limite de estrelas por nível passou a ser opcional e vem desligado.
+- **Calor máximo:** 3 minutos com **80 pontos ou mais** fazem as vermelhas piscarem e virarem amarelas. A retaliação zera, o CJ fica com 6 estrelas da polícia, e há **1 minuto de cooldown** até voltar a contar pontos.
+
+**Helicópteros**
+- **Novo: Hunter** (10% de chance), com rajadas de metralhadora espalhadas e mísseis.
+- **2 helicópteros ao mesmo tempo:** com 90+ pontos, 25% de chance, cada um com o tipo sorteado (podem ser iguais).
+- A partir de 70 pontos, helicóptero e tanque ganham **+10% de chance a cada 10 pontos**.
+- **Piloto ejetado:** ao morrer, o corpo cai do helicóptero antes da explosão. O marcador some quando o helicóptero é derrubado.
+- **Correção da explosão infinita** (conflito com o mod *Fire On Driver*): o piloto não pega fogo, o destroço fica à prova de dano e é removido logo depois de cair.
+
+**Tanque (novo)**
+- No nível 6 ou maior, **25% de chance de um tanque Rhino** a cada emboscada. Ele persegue o CJ e dispara projéteis do canhão mirando nele.
+
+**Desempenho e estabilidade**
+- **Proteção contra a "enxurrada" de carregadores:** quando um mod de armas solta dezenas de pentes de uma vez, o excesso é apagado na hora.
+- Caçadores com munição realista (600) em vez de 9999.
+- Caçadores muito longe, ou que não chegam até o CJ em 150 s, são removidos e liberam espaço.
+- Veículos dos caçadores são apagados com segurança: quem estiver dentro sai antes. Isso corrige um crash depois que o destroço de helicóptero era removido.
 
 ### v1.04
 - **Novos valores de pontos:** matar NPC +2, roubar veículo +2 e **explodir veículo +4** (novo).
@@ -194,8 +239,10 @@ Todas as versões estão na aba [Releases](../../releases). O código de cada um
 
 ## Problemas conhecidos
 
-- **Fire On Driver:** esse mod põe fogo no motorista de todo veículo que explode, e isso pode fazer o destroço do helicóptero explodir várias vezes. A v1.05 contorna o problema ejetando o piloto antes da explosão e deixando o destroço à prova de dano.
-- **Rapel e mísseis do Hunter** usam funções internas do jogo 1.0 US. Em outras versões do executável o mod não roda, de propósito.
+- **Fire On Driver:** esse mod põe fogo no motorista de todo veículo que explode, e isso fazia o destroço do helicóptero explodir sem parar. A v1.05 contorna o problema: o piloto é ejetado antes da explosão, não pega fogo, e o destroço fica à prova de dano até ser removido.
+- **Carregadores do SanVive Weapons System:** em alguns NPCs, esse mod solta dezenas de pentes de uma vez ao recarregar. O Retaliation apaga o excesso automaticamente, mas o problema em si é do outro mod.
+- **Tanque:** o tiro sai na direção do CJ, mas a torre do Rhino não gira visualmente. O projétil é o míssil do jogo.
+- **Rapel, mísseis e estrela em imagem** usam funções internas do jogo 1.0 US. Em outras versões do executável o mod não roda, de propósito.
 - **Estrelas vermelhas:** calibradas para 1920×1080. Em outras resoluções ou com mods de HUD, ajuste a seção `[Stars]`.
 - **Pontos não são salvos no save:** ao carregar um jogo, a retaliação começa do zero.
 - Se o jogo continuar aberto em segundo plano depois de fechado, finalize o `gta-sa.exe` no Gerenciador de Tarefas antes de atualizar o mod.
@@ -210,6 +257,7 @@ O código está em [`source/`](source):
 |---|---|
 | `Retaliation.cpp` | Toda a lógica, como plugin ASI (C++, 32 bits) |
 | `make_cs.py` | Gera o `Retaliation.cs` (script CLEO montado byte a byte, sem Sanny Builder) |
+| `make_txd.py` | Gera o `retstar.txd` (textura da estrela vermelha) |
 | `Retaliation.ini` / `LEIAME.txt` | Configuração e leia-me distribuídos com o mod |
 | `build.ps1` | Script de build |
 | `history/<versão>/` | Código de cada versão publicada |

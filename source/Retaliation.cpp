@@ -98,39 +98,48 @@ struct TierCfg {
     float footMin, footMax, carMin, carMax, cruise;
 };
 
-static TierCfg g_tier[6];
-static int   cfgMaxPoints = 100, cfgKill = 2, cfgTheft = 2, cfgExplode = 4, cfgDecayAmount = 5, cfgDecaySec = 30;
-static int   cfgDeathPenalty = 10, cfgCountHunterKills = 0, cfgPauseOnMission = 1;
+static TierCfg g_tier[7];
+#define MAX_TIER 6
+static int   cfgMaxPoints = 100, cfgKill = 4, cfgTheft = 2, cfgExplode = 4, cfgDecayAmount = 5, cfgDecaySec = 45;
+static int   cfgResetOnDeath = 1, cfgDeathPenalty = 10, cfgCountHunterKills = 0, cfgPauseOnMission = 1;
 static int   cfgShowHud = 1, cfgShowBlips = 1, cfgDebugKeys = 1, cfgFirstWaveSec = 20;
 static float cfgHudX = 12.0f, cfgHudY = 150.0f, cfgDespawnDist = 380.0f, cfgDismountDist = 30.0f;
 static float cfgHudScale = 0.7f;
 static int   cfgKeyMenu = VK_F8, cfgKeyDown = VK_LEFT, cfgKeyUp = VK_RIGHT, cfgKeyAmbush = VK_UP, cfgKeyHeli = VK_DOWN;
 static int   cfgEventsWhenClosed = 1;
 static bool  g_menuOpen = false;
-static int   cfgMaxHeatSec = 180, cfgMaxHeatWanted = 6;
+static int   cfgMaxHeatSec = 180, cfgMaxHeatWanted = 6, cfgHeatCooldownSec = 60, cfgMaxHeatPoints = 80; static int g_lockUntil = 0;
 static int   g_maxSince = 0; static bool g_lock = false; static int g_heatAnim = 0;
 #define HEAT_ANIM_MS 3200
-static int   cfgCopPoints = 1, cfgGangPoints = 1, cfgCountMissionPeds = 0;
-static int   cfgWantedCap = 1, cfgCapOnMission = 0;
+static int   cfgCopPoints = 5, cfgGangPoints = 2, cfgCountMissionPeds = 0;
+static int   cfgWantedCap = 0, cfgCapOnMission = 0;
 // helicopter
 static int   cfgHeliEnabled = 1, cfgHeliModel = 487, cfgHeliWeapon = 29;
 static int   cfgHeliAccuracy = 70, cfgHeliHealth = 150, cfgHeliArmour = 100, cfgHeliCooldown = 120;
 static int   cfgHeliPeds[16]; static int cfgHeliNPeds = 0;
 static float cfgHeliOrbit = 22.0f, cfgHeliHeight = 14.0f;
 static int   cfgHeliRappelChance = 50, cfgRappelCount = 4;
-static int   cfgHeliChance[6] = { 0, 5, 10, 15, 25, 50 };
+static int   cfgHeliChance[7] = { 0, 5, 10, 15, 25, 50, 50 };
 static float cfgRappelHeight = 12.0f;
 static int   cfgUnitDelaySec = 5, cfgMaxEnemies = 16;
+static int   cfgTankChance = 25, cfgTankMinTier = 6, cfgTankModel = 432, cfgTankDriver = 287, cfgTankFireSec = 5, cfgTankCooldown = 90;
+static float cfgTankRange = 110.0f, cfgTankSpeed = 22.0f;
+static int   cfgBonusFrom = 70, cfgBonusPer10 = 10, cfgDoubleHeliFrom = 90, cfgDoubleHeliChance = 25;
 static int   cfgHunterTimeoutSec = 150; static float cfgTimeoutMinDist = 70.0f;
 // Hunter attack helicopter
 static int   cfgHunterChance = 10, cfgHunterModel = 425, cfgHunterGun = 1, cfgHunterGunDamage = 8;
 static int   cfgHunterRockets = 1, cfgHunterRocketSec = 6;
-static float cfgHunterOrbit = 45.0f, cfgHunterHeight = 22.0f, cfgHunterSpread = 2.0f;
+static float cfgHunterOrbit = 45.0f, cfgHunterHeight = 22.0f, cfgHunterSpread = 4.5f;
 // red level stars (replace the old HUD)
-static int   cfgStars = 1, cfgStarsSameRow = 1, cfgStarR = 200, cfgStarG = 20, cfgStarB = 20, cfgStarBlink = 1;
-static float cfgStarsX = 622.5f, cfgStarsY = 82.3f, cfgStarStep = 11.7f, cfgStarRowGap = 15.0f;
-static int   cfgStarShadow = 1;
-static float cfgStarScaleX = 0.42f, cfgStarScaleY = 1.51f;
+static int   cfgStars = 1, cfgStarsSameRow = 0, cfgStarR = 222, cfgStarG = 0, cfgStarB = 0, cfgStarBlink = 1;
+static float cfgStarsX = 620.4f, cfgStarsY = 82.3f, cfgStarStep = 11.35f, cfgStarRowGap = 20.0f;
+static int   cfgStarShadow = 0;
+static int   cfgStarImage = 1, cfgStarImgOutline = 1;
+// performance: magazine flood guard (other mods dropping dozens of clips at once)
+static int   cfgFloodGuard = 1, cfgFloodLimit = 6, cfgHunterAmmo = 600;
+static float cfgFloodRadius = 3.0f, cfgFloodMaxSize = 0.35f;                       // draw the star artwork (retstar.txd) instead of the font glyph
+static float cfgSprX = 614.0f, cfgSprY = 109.5f, cfgSprW = 10.7f, cfgSprH = 13.3f;
+static float cfgStarScaleX = 0.336f, cfgStarScaleY = 1.62f;
 
 static int ParseList(const char* s, int* out, int max)
 {
@@ -163,12 +172,13 @@ static void IniList(const char* sec, const char* key, const char* def, int* out,
 static void LoadConfig()
 {
     cfgMaxPoints       = IniInt("Points", "MaxPoints", 100);
-    cfgKill            = IniInt("Points", "KillPoints", 2);
+    cfgKill            = IniInt("Points", "KillPoints", 4);
     cfgExplode         = IniInt("Points", "ExplodePoints", 4);
     cfgTheft           = IniInt("Points", "TheftPoints", 2);
     cfgDecayAmount     = IniInt("Points", "DecayAmount", 5);
-    cfgDecaySec        = IniInt("Points", "DecayIntervalSeconds", 30);
+    cfgDecaySec        = IniInt("Points", "DecayIntervalSeconds", 45);
     cfgDeathPenalty    = IniInt("Points", "DeathPenalty", 10);
+    cfgResetOnDeath    = IniInt("Points", "ResetOnDeath", 1);
     cfgCountHunterKills= IniInt("Points", "CountHunterKills", 0);
 
     cfgPauseOnMission  = IniInt("General", "PauseSpawnsOnMission", 1);
@@ -177,6 +187,19 @@ static void LoadConfig()
     cfgDespawnDist     = IniFloat("General", "DespawnDistance", 380.0f);
     cfgUnitDelaySec    = IniInt("General", "SpawnDelaySeconds", 5);
     cfgMaxEnemies      = IniInt("General", "MaxEnemies", 16);
+    cfgTankChance      = IniInt("Tank", "Chance", 25);
+    cfgBonusFrom       = IniInt("General", "ExtraChanceFromPoints", 70);
+    cfgBonusPer10      = IniInt("General", "ExtraChancePer10Points", 10);
+    cfgDoubleHeliFrom  = IniInt("Helicopter", "DoubleFromPoints", 90);
+    cfgDoubleHeliChance= IniInt("Helicopter", "DoubleChance", 25);
+    cfgTankMinTier     = IniInt("Tank", "MinLevel", 6);
+    cfgTankModel       = IniInt("Tank", "Model", 432);
+    cfgTankDriver      = IniInt("Tank", "DriverModel", 287);
+    cfgTankFireSec     = IniInt("Tank", "FireSeconds", 5);
+    cfgTankCooldown    = IniInt("Tank", "CooldownSeconds", 90);
+    cfgTankRange       = IniFloat("Tank", "Range", 110.0f);
+    cfgTankSpeed       = IniFloat("Tank", "Speed", 22.0f);
+    if (cfgTankFireSec < 2) cfgTankFireSec = 2;
     cfgHunterTimeoutSec= IniInt("General", "HunterTimeoutSeconds", 150);
     cfgTimeoutMinDist  = IniFloat("General", "TimeoutMinDistance", 70.0f);
 
@@ -188,21 +211,34 @@ static void LoadConfig()
     cfgHunterRocketSec = IniInt("Helicopter", "HunterRocketSeconds", 6);
     cfgHunterOrbit     = IniFloat("Helicopter", "HunterOrbitRadius", 45.0f);
     cfgHunterHeight    = IniFloat("Helicopter", "HunterHeight", 22.0f);
-    cfgHunterSpread    = IniFloat("Helicopter", "HunterGunSpread", 2.0f);
+    cfgHunterSpread    = IniFloat("Helicopter", "HunterGunSpread", 4.5f);
     if (cfgHunterRocketSec < 2) cfgHunterRocketSec = 2;
 
     cfgStars           = IniInt("Stars", "Enabled", 1);
-    cfgStarsSameRow    = IniInt("Stars", "SameRowAsWanted", 1);
-    cfgStarsX          = IniFloat("Stars", "X", 622.5f);
+    cfgStarsSameRow    = IniInt("Stars", "SameRowAsWanted", 0);
+    cfgStarsX          = IniFloat("Stars", "X", 620.4f);
     cfgStarsY          = IniFloat("Stars", "Y", 82.3f);
-    cfgStarStep        = IniFloat("Stars", "StarSpacing", 11.7f);
-    cfgStarShadow      = IniInt("Stars", "Outline", 1);
-    cfgStarRowGap      = IniFloat("Stars", "RowGap", 15.0f);
-    cfgStarScaleX      = IniFloat("Stars", "ScaleX", 0.42f);
-    cfgStarScaleY      = IniFloat("Stars", "ScaleY", 1.51f);
-    cfgStarR           = IniInt("Stars", "R", 200);
-    cfgStarG           = IniInt("Stars", "G", 20);
-    cfgStarB           = IniInt("Stars", "B", 20);
+    cfgStarStep        = IniFloat("Stars", "StarSpacing", 11.35f);
+    cfgStarShadow      = IniInt("Stars", "Outline", 0);
+    cfgStarRowGap      = IniFloat("Stars", "RowGap", 20.0f);
+    cfgStarScaleX      = IniFloat("Stars", "ScaleX", 0.336f);
+    cfgStarScaleY      = IniFloat("Stars", "ScaleY", 1.62f);
+    cfgStarR           = IniInt("Stars", "R", 222);
+    cfgStarG           = IniInt("Stars", "G", 0);
+    cfgStarB           = IniInt("Stars", "B", 0);
+    cfgStarImage       = IniInt("Stars", "UseImage", 1);
+    cfgStarImgOutline  = IniInt("Stars", "ImageOutline", 1);
+    cfgFloodGuard      = IniInt("Performance", "MagazineFloodGuard", 1);
+    cfgFloodLimit      = IniInt("Performance", "MaxSameObjectsInPile", 6);
+    cfgFloodRadius     = IniFloat("Performance", "PileRadius", 3.0f);
+    cfgFloodMaxSize    = IniFloat("Performance", "MaxObjectSize", 0.35f);
+    cfgHunterAmmo      = IniInt("Performance", "HunterAmmo", 600);
+    if (cfgFloodLimit < 2) cfgFloodLimit = 2;
+    if (cfgHunterAmmo < 30) cfgHunterAmmo = 30;
+    cfgSprX            = IniFloat("Stars", "ImageX", 614.0f);
+    cfgSprY            = IniFloat("Stars", "ImageY", 109.5f);
+    cfgSprW            = IniFloat("Stars", "ImageWidth", 10.7f);
+    cfgSprH            = IniFloat("Stars", "ImageHeight", 13.3f);
     cfgStarBlink       = IniInt("Stars", "BlinkOnAmbush", 1);
     cfgDismountDist    = IniFloat("General", "DismountDistance", 30.0f);
 
@@ -214,18 +250,20 @@ static void LoadConfig()
     cfgKeyHeli         = IniInt("Menu", "KeyForceHeli", VK_DOWN);
     cfgEventsWhenClosed= IniInt("Debug", "ShowEvents", 0);
 
-    cfgCopPoints       = IniInt("Points", "CopKillPoints", 1);
+    cfgCopPoints       = IniInt("Points", "CopKillPoints", 5);
     cfgMaxHeatSec      = IniInt("MaxHeat", "SecondsAtMax", 180);
     cfgMaxHeatWanted   = IniInt("MaxHeat", "WantedLevel", 6);
-    cfgGangPoints      = IniInt("Points", "GangKillPoints", 1);
+    cfgHeatCooldownSec = IniInt("MaxHeat", "CooldownSeconds", 60);
+    cfgMaxHeatPoints   = IniInt("MaxHeat", "MinPoints", 80);
+    cfgGangPoints      = IniInt("Points", "GangKillPoints", 2);
     cfgCountMissionPeds= IniInt("Points", "CountMissionPedKills", 0);
 
-    cfgWantedCap       = IniInt("Wanted", "LimitWantedLevel", 1);
+    cfgWantedCap       = IniInt("Wanted", "LimitWantedLevel", 0);
     cfgCapOnMission    = IniInt("Wanted", "LimitDuringMissions", 0);
 
     cfgHeliEnabled     = IniInt("Helicopter", "Enabled", 1);
-    for (int t = 1; t <= 5; t++) {
-        static const int def[6] = { 0, 5, 10, 15, 25, 50 };
+    for (int t = 1; t <= MAX_TIER; t++) {
+        static const int def[7] = { 0, 5, 10, 15, 25, 50, 50 };
         char key[32]; sprintf(key, "ChanceTier%d", t);
         cfgHeliChance[t] = IniInt("Helicopter", key, def[t]);
     }
@@ -253,20 +291,22 @@ static void LoadConfig()
     // defaults per tier -----------------------------------------------
     // one specific group of NPCs per tier
     struct Def { const char *models, *weapons, *cars; int foot, cars_, perCar, maxA, interval, acc, hp, arm; float fmin, fmax, cmin, cmax, cruise; };
-    static const Def defs[6] = {
+    static const Def defs[7] = {
         { "", "", "", 0,0,0,0,0,0,0,0, 0,0,0,0,0 },
         // 1: casino debt collectors (Leone family)
-        { "124,125",         "22,23",          "405,445,421,551,575,576,534,567,461", 2, 1, 2,  4, 120, 30, 100,   0, 70, 95, 210, 270, 30 },
+        { "124,125",         "22,23",          "405,445,421,551,575,576,534,567,461", 2, 1, 2, 4, 45, 30, 100, 0, 70, 95, 210, 270, 30 },
         // 2: casino hitmen (Leone family, other skins)
-        { "126,127",         "22,24,25",       "402,429,480,506,533,579,400,412,536,521,522", 2, 1, 3,  6,  90, 45, 100,   0, 70, 95, 210, 270, 35 },
+        { "126,127",         "22,24,25",       "402,429,480,506,533,579,400,412,536,521,522", 2, 1, 3, 6, 45, 45, 100, 0, 70, 95, 210, 270, 35 },
         // 3: rednecks
-        { "158,159,160,161,162,200", "25,26,33,24", "543,478,422,554,600,489,500,468,586,463,471", 4, 1, 4, 9, 70, 55, 100, 25, 70, 95, 210, 270, 38 },
+        { "158,159,160,161,162,200", "25,26,33,24", "543,478,422,554,600,489,500,468,586,463,471", 4, 1, 4, 9, 45, 55, 100, 25, 70, 95, 210, 270, 38 },
         // 4: Russian mafia
-        { "111,112,113",     "30,29,28,26",    "579,400,470,489,426,445,402,560,461,581", 4, 2, 3, 12,  55, 65, 120,  50, 70, 95, 210, 280, 42 },
+        { "111,112,113",     "30,29,28,26",    "579,400,470,489,426,445,402,560,461,581", 4, 2, 3, 12, 45, 65, 120, 50, 70, 95, 210, 280, 42 },
         // 5: Triads (black suits, San Fierro)
-        { "117,118,120",     "31,30,27",       "507,560,559,558,561,565,562,445,522,521", 6, 2, 4, 16,  45, 80, 150, 100, 70, 95, 220, 290, 48 },
+        { "117,118,120",     "31,30,27",       "507,560,559,558,561,565,562,445,522,521", 6, 2, 4, 16, 45, 80, 150, 100, 70, 95, 220, 290, 48 },
+        // 6: all-out war - elite mercenaries from every group, heavy weapons (+ tank chance)
+        { "117,118,120,111,112,113,126,127", "31,30,27", "579,470,489,495,560,507,402,522", 6, 2, 4, 16, 45, 85, 175, 100, 70, 95, 220, 290, 50 },
     };
-    for (int t = 1; t <= 5; t++) {
+    for (int t = 1; t <= MAX_TIER; t++) {
         char sec[16]; sprintf(sec, "Tier%d", t);
         TierCfg& c = g_tier[t];
         IniList(sec, "PedModels", defs[t].models, c.models, 48, &c.nModels);
@@ -359,15 +399,21 @@ static int  g_prevTier = 0;
 static bool g_enabled = true;
 static int  g_pauseReason = 0;  // 0 none, 1 mission, 2 interior
 
-// state: 0 riding car, 1 leaving car, 2 attacking on foot, 3 heli gunner, 4 heli pilot, 5 rappelling
-struct Hunter { bool used, heli; int ped, blip, squad, state, stateTime, born; void* task; };
+// state: 0 riding car, 1 leaving car, 2 attacking on foot, 3 heli gunner, 4 heli pilot, 5 rappelling, 6 tank driver
+struct Hunter { bool used, heli; int ped, blip, squad, state, stateTime, born, heliIdx; void* task; };
 
 // mercenary helicopter
 // type: 0 = gunners on the skids, 1 = mercenaries rappel down (SWAT rope)
 struct HeliState { int state; int car, blip, loadStart, lastCmd, cooldownUntil; float ang; int models[4]; int nModels; int pedA, pedB;
                    int type, model; bool crashing, exploded; int crashStart, spawnTime, dropped, lastDrop, doneTime, wreckTime;
                    int nextBurst, burstLeft, lastShot, nextRocket; };
-static HeliState g_heli;
+#define MAX_HELIS 2
+static HeliState g_helis[MAX_HELIS]; static int g_curHeli = 0;
+#define g_heli (g_helis[g_curHeli])
+
+// level 6: Rhino tank that hunts CJ and fires shells (rockets) at him
+struct TankState { int state; int car, driver, blip, nextShot, loadStart, cooldownUntil, lastCmd; };
+static TankState g_tank;
 struct Squad  { bool used; int car, spawnTime, slowSince; bool dismount; };
 #define MAX_HUNTERS 40
 #define MAX_SQUADS  10
@@ -390,9 +436,16 @@ static uint8_t g_pedId[MAX_SLOTS], g_pedCounted[MAX_SLOTS];
 static uint8_t g_vehId[MAX_SLOTS], g_vehOwned[MAX_SLOTS];
 static uint32_t g_vehBlown[MAX_SLOTS];
 static int g_exCars[32]; static int g_exCarPos = 0;
-static bool g_heliRequest = false;
+static int  g_heliRequest = 0;            // helicopters requested by the current wave
 
-static int TierOf(int pts) { int t = pts / 10; return t < 0 ? 0 : (t > 5 ? 5 : t); }
+// from 70 points on, every 10 points add +10% to the helicopter and tank chances
+static int ChanceBonus()
+{
+    if (g_points < cfgBonusFrom) return 0;
+    return ((g_points - cfgBonusFrom) / 10 + 1) * cfgBonusPer10;
+}
+
+static int TierOf(int pts) { int t = pts / 10; return t < 0 ? 0 : (t > MAX_TIER ? MAX_TIER : t); }
 
 static void SetEvent(int ev, int val) { g_event = ev; g_eventValue = val; g_eventTime = Now(); }
 
@@ -419,7 +472,9 @@ static bool IsOurVehicle(int h)
 {
     for (int i = 0; i < MAX_SQUADS; i++) if (g_s[i].used && g_s[i].car == h) return true;
     for (int i = 0; i < 32; i++) if (g_exCars[i] == h) return true;
-    return g_heli.car == h && g_heli.state == 2;
+    if (g_tank.state == 2 && g_tank.car == h) return true;
+    for (int k = 0; k < MAX_HELIS; k++) if (g_helis[k].car == h && g_helis[k].state == 2) return true;
+    return false;
 }
 
 static int TotalHunters() { int n = 0; for (int i = 0; i < MAX_HUNTERS; i++) if (g_h[i].used) n++; return n; }
@@ -436,6 +491,31 @@ static void ReleaseHunter(Hunter& h, bool exists)
 static bool OnScreen(float x, float y, float z);
 
 // delete it right away when the player can't see it (frees memory), otherwise let the game clean it up
+// Deletes one of our vehicles safely: our own peds still inside are deleted
+// first (a ped left in a deleted vehicle crashes the game - v1.05 heli wreck
+// crash). If someone else is inside (CJ, a cop...), it is only released.
+static void SafeDeleteCar(int car)
+{
+    uint8_t* v = VehPtr(car);
+    if (!v) return;
+    CPool* pp = *(CPool**)ADDR_PED_POOL;
+    uint8_t* player = *(uint8_t**)ADDR_PLAYER_PED;
+    bool foreign = false;
+    for (int k = 0; k < 9; k++) {
+        uint8_t* ped = *(uint8_t**)(v + 0x460 + k * 4);        // driver, then 8 passengers
+        if (!ped) continue;
+        if (ped == player || !pp) { foreign = true; continue; }
+        int idx = (int)((ped - pp->objects) / PED_SIZE);
+        if (idx < 0 || idx >= pp->size) { foreign = true; continue; }
+        int handle = (idx << 8) | pp->byteMap[idx];
+        if (!IsHunterHandle(handle)) { foreign = true; continue; }
+        Cmd(0x009B).I(handle).Run();                             // DELETE_CHAR (also leaves the seat)
+    }
+    for (int k = 0; k < 9 && !foreign; k++) if (*(uint8_t**)(v + 0x460 + k * 4)) foreign = true;
+    if (foreign) { Cmd(0x01C3).I(car).Run(); return; }          // someone else inside: just release it
+    Cmd(0x00A6).I(car).Run();                                    // DELETE_CAR
+}
+
 static void DespawnHunter(Hunter& h, float x, float y, float z)
 {
     if (!OnScreen(x, y, z + 1.0f)) { Cmd(0x009B).I(h.ped).Run(); ReleaseHunter(h, false); }
@@ -463,7 +543,7 @@ static void HeliReleaseModels()
 
 static void EndHeli(int cooldownMs)
 {
-    for (int i = 0; i < MAX_HUNTERS; i++) if (g_h[i].used && g_h[i].heli) ReleaseHunter(g_h[i], CharExists(g_h[i].ped));
+    for (int i = 0; i < MAX_HUNTERS; i++) if (g_h[i].used && g_h[i].heli && g_h[i].heliIdx == g_curHeli) ReleaseHunter(g_h[i], CharExists(g_h[i].ped));
     if (g_heli.blip) Cmd(0x0164).I(g_heli.blip).Run();
     if (g_heli.state == 2 && CarExists(g_heli.car)) Cmd(0x01C3).I(g_heli.car).Run();
     if (g_heli.state == 1) HeliReleaseModels();
@@ -472,10 +552,14 @@ static void EndHeli(int cooldownMs)
     g_heli.cooldownUntil = Now() + cooldownMs;
 }
 
+static void EndTank(int cooldownMs);
+
 static void CleanupAll()
 {
+    if (g_tank.state) EndTank(cfgTankCooldown * 1000);
     g_heliRequest = false;
-    if (g_heli.state) EndHeli(cfgHeliCooldown * 1000);
+    for (g_curHeli = 0; g_curHeli < MAX_HELIS; g_curHeli++) if (g_heli.state) EndHeli(cfgHeliCooldown * 1000);
+    g_curHeli = 0;
     for (int i = 0; i < MAX_HUNTERS; i++) if (g_h[i].used) ReleaseHunter(g_h[i], CharExists(g_h[i].ped));
     for (int i = 0; i < MAX_SQUADS; i++) if (g_s[i].used) ReleaseSquad(g_s[i]);
     if (g_pending) CancelPending();
@@ -487,7 +571,8 @@ static void ResetState()
     memset(g_h, 0, sizeof(g_h));
     memset(g_s, 0, sizeof(g_s));
     memset(g_exHunters, 0, sizeof(g_exHunters));
-    memset(&g_heli, 0, sizeof(g_heli));
+    memset(g_helis, 0, sizeof(g_helis)); g_curHeli = 0;
+    memset(&g_tank, 0, sizeof(g_tank));
     g_pending = false; g_spawning = false; g_nReq = 0; g_heliRequest = false;
     memset(g_exCars, 0, sizeof(g_exCars));
     g_points = 0; g_lastGain = g_lastDecay = 0; g_prevTier = 0; g_maxSince = 0; g_lock = false; g_heatAnim = 0;
@@ -591,7 +676,7 @@ static void UpdateHunters(int now, int playerChar, float px, float py)
                 uint8_t* pl = *(uint8_t**)ADDR_PLAYER_PED;
                 uint8_t* pv = pl ? *(uint8_t**)(pl + PED_VEHICLE) : 0;
                 if (VehPtr(q.car) != pv && Dist2D(cx, cy, px, py) > 80.0f && !OnScreen(cx, cy, cz + 1.0f)) {
-                    Cmd(0x00A6).I(q.car).Run();
+                    SafeDeleteCar(q.car);
                     g_exCars[g_exCarPos] = q.car; g_exCarPos = (g_exCarPos + 1) % 32;
                     q.used = false; q.car = 0; continue;
                 }
@@ -619,10 +704,10 @@ static void UpdateHunters(int now, int playerChar, float px, float py)
         float dist = Dist2D(x, y, px, py);
         // safety: too far from CJ, or taking too long to reach him -> despawn and free the slot
         bool tooFar  = dist > cfgDespawnDist;
-        bool tooSlow = !h.heli && h.state != 5 && now - h.born > cfgHunterTimeoutSec * 1000 && dist > cfgTimeoutMinDist;
+        bool tooSlow = !h.heli && h.state != 5 && h.state != 6 && now - h.born > cfgHunterTimeoutSec * 1000 && dist > cfgTimeoutMinDist;
         if (tooFar || tooSlow) { if (h.heli) ReleaseHunter(h, true); else DespawnHunter(h, x, y, z); continue; }
 
-        if (h.state == 4) continue;               // heli pilot: driven by UpdateHeli
+        if (h.state == 4 || h.state == 6) continue;   // heli pilot / tank driver: driven by UpdateHeli / UpdateTank
         if (h.state == 5) {                       // sliding down the rope
             uint8_t* p = PedPtr(h.ped);
             uint8_t* intel = p ? *(uint8_t**)(p + 0x47C) : 0;
@@ -715,10 +800,27 @@ static void PrepareWave(int tier)
     }
     g_spawning = false; g_waveAnnounced = false;
     g_pending = g_nUnits > 0;
-    // second dice: does a helicopter come with this wave?
-    if (g_pending && cfgHeliEnabled && g_heli.state == 0 && !g_heliRequest && Now() >= g_heli.cooldownUntil) {
+    // tank dice (level 6+)
+    if (g_pending && tier >= cfgTankMinTier && g_tank.state == 0 && Now() >= g_tank.cooldownUntil) {
         int roll = RandInt(1, 100);
-        if (roll <= cfgHeliChance[tier]) { g_heliRequest = true; Log("[%d] heli roll %d <= %d%%: helicopter joins the wave", Now(), roll, cfgHeliChance[tier]); }
+        if (roll <= cfgTankChance + ChanceBonus()) {
+            g_tank.state = 1; g_tank.loadStart = Now();
+            Cmd(0x0247).I(cfgTankModel).Run(); Cmd(0x0247).I(cfgTankDriver).Run();
+            Log("[%d] tank roll %d <= %d%%: tank joins the wave", Now(), roll, cfgTankChance + ChanceBonus());
+        }
+    }
+    // second dice: does a helicopter come with this wave?
+    int freeHelis = 0;
+    for (int k = 0; k < MAX_HELIS; k++) if (g_helis[k].state == 0 && Now() >= g_helis[k].cooldownUntil) freeHelis++;
+    if (g_pending && cfgHeliEnabled && freeHelis > 0 && !g_heliRequest) {
+        int chance = cfgHeliChance[tier] + ChanceBonus();
+        int roll = RandInt(1, 100);
+        if (roll <= chance) {
+            int n = 1;
+            if (g_points >= cfgDoubleHeliFrom && freeHelis >= 2 && RandInt(1, 100) <= cfgDoubleHeliChance) n = 2;   // two at once
+            g_heliRequest = n;
+            Log("[%d] heli roll %d <= %d%%: %d helicopter(s) join the wave", Now(), roll, chance, n);
+        }
     }
 }
 
@@ -759,7 +861,7 @@ static int FreeSquadSlot()  { for (int i = 0; i < MAX_SQUADS; i++)  if (!g_s[i].
 static Hunter* SetupHunterEx(int ped, int weapon, int accuracy, int health, int armour, int squad, int state, int playerChar, bool heli, bool wantBlip)
 {
     int slot = FreeHunterSlot();
-    Cmd(0x01B2).I(ped).I(weapon).I(9999).Run();
+    Cmd(0x01B2).I(ped).I(weapon).I(cfgHunterAmmo).Run();
     Cmd(0x01B9).I(ped).I(weapon).Run();
     Cmd(0x02E2).I(ped).I(accuracy).Run();
     Cmd(0x0223).I(ped).I(health).Run();
@@ -772,7 +874,7 @@ static Hunter* SetupHunterEx(int ped, int weapon, int accuracy, int health, int 
     if (state == 2 || state == 3) AttackPlayer(ped, playerChar);
     if (slot < 0) { if (blip) Cmd(0x0164).I(blip).Run(); Cmd(0x01C2).I(ped).Run(); return 0; }
     Hunter& h = g_h[slot];
-    h.used = true; h.heli = heli; h.ped = ped; h.blip = blip; h.squad = squad; h.state = state; h.stateTime = Now(); h.born = Now(); h.task = 0;
+    h.used = true; h.heli = heli; h.heliIdx = g_curHeli; h.ped = ped; h.blip = blip; h.squad = squad; h.state = state; h.stateTime = Now(); h.born = Now(); h.task = 0;
     return &h;
 }
 
@@ -875,6 +977,7 @@ static void HeliRemoveWreck()
     for (int i = 0; i < MAX_HUNTERS; i++) {
         Hunter& h = g_h[i];
         if (!h.used) continue;
+        if (h.heliIdx != g_curHeli) continue;   // belongs to the other helicopter
         if (h.state == 5) {                       // still on a rope: drop the rope task first
             uint8_t* p = PedPtr(h.ped);
             if (p) *(uint32_t*)(p + 0x1C) |= 1;
@@ -885,14 +988,14 @@ static void HeliRemoveWreck()
         if (h.heli) ReleaseHunter(h, CharExists(h.ped));
     }
     int car = H.car;
-    if (CarExists(car)) Cmd(0x00A6).I(car).Run();                                     // DELETE_CAR
+    if (CarExists(car)) SafeDeleteCar(car);
     Log("[%d] helicopter wreck removed", Now());
     EndHeli(cfgHeliCooldown * 1000);
 }
 
 static int HeliPilotIdx()
 {
-    for (int i = 0; i < MAX_HUNTERS; i++) if (g_h[i].used && g_h[i].heli && g_h[i].state == 4) return i;
+    for (int i = 0; i < MAX_HUNTERS; i++) if (g_h[i].used && g_h[i].heli && g_h[i].heliIdx == g_curHeli && g_h[i].state == 4) return i;
     return -1;
 }
 
@@ -924,7 +1027,7 @@ static void EjectDeadPilot(int idx)
 static bool HeliPilotAlive()
 {
     for (int i = 0; i < MAX_HUNTERS; i++)
-        if (g_h[i].used && g_h[i].heli && g_h[i].state == 4) return !CharDead(g_h[i].ped);
+        if (g_h[i].used && g_h[i].heli && g_h[i].heliIdx == g_curHeli && g_h[i].state == 4) return !CharDead(g_h[i].ped);
     return false;
 }
 
@@ -964,17 +1067,97 @@ static void HunterAttack(int now, float px, float py, float pz, float hx, float 
     }
 }
 
+static void EndTank(int cooldownMs)
+{
+    TankState& T = g_tank;
+    if (T.blip) Cmd(0x0164).I(T.blip).Run();
+    for (int i = 0; i < MAX_HUNTERS; i++) if (g_h[i].used && g_h[i].state == 6) ReleaseHunter(g_h[i], CharExists(g_h[i].ped));
+    if (T.state == 1) { Cmd(0x0249).I(cfgTankModel).Run(); Cmd(0x0249).I(cfgTankDriver).Run(); }
+    if (T.state == 2 && CarExists(T.car)) Cmd(0x01C3).I(T.car).Run();
+    if (T.car) { g_exCars[g_exCarPos] = T.car; g_exCarPos = (g_exCarPos + 1) % 32; }
+    T.state = 0; T.car = 0; T.blip = 0;
+    T.cooldownUntil = Now() + cooldownMs;
+}
+
+static void UpdateHeliSlot(int now, int playerChar, float px, float py, float pz);
+
 static void UpdateHeli(int now, int playerChar, float px, float py, float pz)
+{
+    for (g_curHeli = 0; g_curHeli < MAX_HELIS; g_curHeli++) UpdateHeliSlot(now, playerChar, px, py, pz);
+    g_curHeli = 0;
+}
+
+static void UpdateTank(int now, int playerChar, float px, float py, float pz)
+{
+    TankState& T = g_tank;
+    if (T.state == 0) return;
+    if (T.state == 1) {
+        if (TierOf(g_points) < cfgTankMinTier || g_pauseReason) { EndTank(0); return; }
+        if (!Cmd(0x0248).I(cfgTankModel).Run() || !Cmd(0x0248).I(cfgTankDriver).Run()) {
+            if (now - T.loadStart > 20000) EndTank(10000);
+            return;
+        }
+        if (TotalHunters() + 1 > cfgMaxEnemies) return;                 // wait for room
+        const TierCfg& c = g_tier[MAX_TIER];
+        float x, y, z;
+        if (!FindCarSpawn(px, py, pz, c.carMin, c.carMax, &x, &y, &z)) return;   // retry next frame
+        Cmd cc(0x00A5); cc.I(cfgTankModel).F(x).F(y).F(z).O().Run();
+        int car = LV(0);
+        if (!CarExists(car)) { EndTank(10000); return; }
+        Cmd(0x0175).I(car).F(atan2f(-(px - x), (py - y)) * 57.29578f).Run();
+        Cmd dc(0x0129); dc.I(car).I(PEDTYPE_MISSION1).I(cfgTankDriver).O().Run();
+        int driver = LV(0);
+        if (CharExists(driver)) {
+            SetupHunterEx(driver, 31, c.accuracy, 200, 100, -1, 6, playerChar, false, false);
+            Cmd(0x02AB).I(driver).I(0).I(1).I(0).I(0).I(0).Run();       // fireproof (Fire On Driver)
+        }
+        Cmd(0x00AE).I(car).I(2).Run();
+        Cmd(0x00AD).I(car).F(cfgTankSpeed).Run();
+        Cmd(0x00AF).I(car).I(2).Run();                                   // MISSION_RAMPLAYER_FARAWAY
+        T.blip = 0;
+        if (cfgShowBlips) { Cmd b(0x0186); b.I(car).O().Run(); T.blip = LV(0); Cmd(0x0165).I(T.blip).I(0).Run(); }
+        Cmd(0x0249).I(cfgTankModel).Run(); Cmd(0x0249).I(cfgTankDriver).Run();
+        T.car = car; T.driver = driver; T.state = 2; T.nextShot = now + 6000; T.lastCmd = now;
+        Log("[%d] tank spawned", now);
+        return;
+    }
+    // ---- state 2: hunting
+    if (!CarExists(T.car)) { EndTank(cfgTankCooldown * 1000); return; }
+    if (CarDead(T.car)) { Log("[%d] tank destroyed", now); EndTank(cfgTankCooldown * 1000); return; }
+    bool driverOk = false;
+    for (int i = 0; i < MAX_HUNTERS; i++) if (g_h[i].used && g_h[i].state == 6 && g_h[i].ped == T.driver) driverOk = !CharDead(T.driver);
+    float tx, ty, tz; CarPos(T.car, &tx, &ty, &tz);
+    float d = Dist2D(tx, ty, px, py);
+    if (!driverOk || d > 400.0f || TierOf(g_points) < cfgTankMinTier - 1) { EndTank(cfgTankCooldown * 1000); return; }
+    if (now - T.lastCmd > 5000) { Cmd(0x00AF).I(T.car).I(2).Run(); T.lastCmd = now; }   // keep chasing
+    if (now < T.nextShot || d > cfgTankRange || d < 12.0f) return;
+    uint8_t* tank = VehPtr(T.car);
+    uint8_t* player = *(uint8_t**)ADDR_PLAYER_PED;
+    float* m = tank ? *(float**)(tank + 0x14) : 0;
+    if (!m || !player) return;
+    float ex, ey, ez; EntityPos(player, &ex, &ey, &ez); ez += 0.5f;
+    float sx = m[12] + m[8] * 2.2f, sy = m[13] + m[9] * 2.2f, sz = m[14] + m[10] * 2.2f;   // turret height
+    float dx = ex - sx, dy = ey - sy, dz = ez - sz;
+    float len = sqrtf(dx * dx + dy * dy + dz * dz);
+    if (len < 1.0f) return;
+    dx /= len; dy /= len; dz /= len;
+    sx += dx * 4.5f; sy += dy * 4.5f; sz += dz * 4.5f;                  // muzzle, clear of the hull
+    float dir[3] = { dx, dy, dz };
+    AddProjectile(tank, 19, sx, sy, sz, 1.0f, dir, 0);
+    T.nextShot = now + cfgTankFireSec * 1000 + RandInt(0, 1500);
+}
+
+static void UpdateHeliSlot(int now, int playerChar, float px, float py, float pz)
 {
     if (!cfgHeliEnabled || cfgHeliNPeds == 0) return;
     HeliState& H = g_heli;
     bool wanted = TierOf(g_points) > 0 && !g_pauseReason;
 
     if (H.state == 0) {
-        if (!g_heliRequest) return;
-        if (!wanted) { g_heliRequest = false; return; }
+        if (!g_heliRequest || now < H.cooldownUntil) return;
+        if (!wanted) { g_heliRequest = 0; return; }
         if (TotalHunters() + 5 > cfgMaxEnemies) return;      // wait for room (pilot + 4)
-        g_heliRequest = false;
+        g_heliRequest--;
         H.nModels = 0;
         // ped models kept apart from the (deduplicated) request list
         H.pedA = cfgHeliPeds[RandInt(0, cfgHeliNPeds - 1)];
@@ -1050,6 +1233,7 @@ static void UpdateHeli(int now, int playerChar, float px, float py, float pz)
     bool dead = CarDead(H.car);
     if (dead || H.crashing) {
         if (!H.crashing) { H.crashing = true; H.crashStart = now; }
+        if (H.blip) { Cmd(0x0164).I(H.blip).Run(); H.blip = 0; }        // no marker on a wreck
         if (!dead) {
             // falling: blow up on impact (or after a few seconds anyway) - once
             Cmd gz(0x02CE); gz.F(hx).F(hy).F(hz).O().Run(); float ground = LVF(0);
@@ -1076,6 +1260,7 @@ static void UpdateHeli(int now, int playerChar, float px, float py, float pz)
         // when it explodes), then engine off, fire, and let it fall
         if (pi >= 0) EjectDeadPilot(pi);
         H.crashing = true; H.crashStart = now;
+        if (H.blip) { Cmd(0x0164).I(H.blip).Run(); H.blip = 0; }
         Cmd(0x0918).I(H.car).I(0).Run();
         Cmd(0x0224).I(H.car).I(200).Run();
         if (H.type == 1) HeliReleaseModels();
@@ -1088,7 +1273,7 @@ static void UpdateHeli(int now, int playerChar, float px, float py, float pz)
 
     if (H.type == 0) {
         bool gunners = false;
-        for (int i = 0; i < MAX_HUNTERS; i++) if (g_h[i].used && g_h[i].heli && g_h[i].state == 3) gunners = true;
+        for (int i = 0; i < MAX_HUNTERS; i++) if (g_h[i].used && g_h[i].heli && g_h[i].heliIdx == g_curHeli && g_h[i].state == 3) gunners = true;
         if (!gunners) { EndHeli(cfgHeliCooldown * 1000); return; }
         if (now - H.lastCmd > 1500) {
             // orbit around the player so the side gunners keep line of sight
@@ -1143,6 +1328,73 @@ static void UpdateWanted()
 // 5 red stars held for SecondsAtMax: retaliation turns into police heat.
 // Points go to 0, CJ gets WantedLevel police stars, and no retaliation points
 // are earned until the wanted level is gone (or CJ dies / is busted).
+// ---------------------------------------------------------------------
+// Magazine flood guard: some NPCs make a weapon mod drop dozens of clips at
+// once on reload, which kills the FPS. Every 250 ms we look for piles of the
+// same tiny object (collision radius < MaxObjectSize) and delete what is over
+// MaxSameObjectsInPile within PileRadius. (The weapon mod tracks object
+// deletion, so removing its clips is safe for it.)
+// ---------------------------------------------------------------------
+#define ADDR_OBJ_POOL   0xB7449C
+#define OBJ_SIZE        0x19C
+#define ADDR_MODELINFO  0xA9B0C8
+struct SmallObj { int handle; short model; float x, y, z; bool gone; };
+static SmallObj g_small[600];
+static short g_loggedModels[32]; static int g_nLogged = 0;
+
+static float ModelRadius(int model)
+{
+    if (model < 0 || model >= 20000) return 99.0f;
+    uint8_t* mi = ((uint8_t**)ADDR_MODELINFO)[model];
+    if (!mi) return 99.0f;
+    uint8_t* col = *(uint8_t**)(mi + 0x14);
+    if (!col) return 99.0f;
+    return *(float*)(col + 0x24);                  // CColModel bounding sphere radius
+}
+
+static void FloodGuard(int now)
+{
+    static int last = 0;
+    if (!cfgFloodGuard || now - last < 250) return;
+    last = now;
+    CPool* pool = *(CPool**)ADDR_OBJ_POOL;
+    if (!pool) return;
+    int n = 0;
+    for (int i = 0; i < pool->size && n < 600; i++) {
+        uint8_t b = pool->byteMap[i];
+        if (b & 0x80) continue;
+        uint8_t* o = pool->objects + i * OBJ_SIZE;
+        short model = *(short*)(o + 0x22);
+        if ((model >= 321 && model <= 372) || (model >= 1210 && model <= 1279)) continue;   // weapons / pickups: never touch
+        if (ModelRadius(model) > cfgFloodMaxSize) continue;
+        SmallObj& so = g_small[n++];
+        so.handle = (i << 8) | b; so.model = model; so.gone = false;
+        EntityPos(o, &so.x, &so.y, &so.z);
+    }
+    float r2 = cfgFloodRadius * cfgFloodRadius;
+    int removed = 0;
+    for (int i = 0; i < n; i++) {
+        if (g_small[i].gone) continue;
+        int kept = 1;
+        for (int j = i + 1; j < n; j++) {
+            SmallObj& o = g_small[j];
+            if (o.gone || o.model != g_small[i].model) continue;
+            float dx = o.x - g_small[i].x, dy = o.y - g_small[i].y, dz = o.z - g_small[i].z;
+            if (dx * dx + dy * dy + dz * dz > r2) continue;
+            if (++kept > cfgFloodLimit) { Cmd(0x0108).I(o.handle).Run(); o.gone = true; removed++; }   // DESTROY_OBJECT
+        }
+        if (kept > cfgFloodLimit) {
+            bool seen = false;
+            for (int k = 0; k < g_nLogged; k++) if (g_loggedModels[k] == g_small[i].model) seen = true;
+            if (!seen && g_nLogged < 32) {
+                g_loggedModels[g_nLogged++] = g_small[i].model;
+                Log("[%d] flood guard: pile of %d objects (model %d) - extra ones removed", now, kept, g_small[i].model);
+            }
+        }
+    }
+    (void)removed;
+}
+
 static void UpdateMaxHeat(int now)
 {
     Cmd w(0x01C0); w.I(0).O().Run(); int wanted = LV(0);
@@ -1151,16 +1403,17 @@ static void UpdateMaxHeat(int now)
         if (now - g_heatAnim >= HEAT_ANIM_MS) {
             g_heatAnim = 0;
             Cmd(0x01F0).I(6).Run();                               // make sure 6 stars are allowed
-            Cmd(0x010D).I(0).I(cfgMaxHeatWanted).Run();           // ALTER_WANTED_LEVEL
+            if (wanted < cfgMaxHeatWanted) Cmd(0x010D).I(0).I(cfgMaxHeatWanted).Run();   // ALTER_WANTED_LEVEL (only raise)
+            g_lockUntil = now + cfgHeatCooldownSec * 1000;          // cooldown before points count again
             Log("[%d] max heat: %d police stars given", now, cfgMaxHeatWanted);
         }
         return;
     }
     if (g_lock) {
-        if (wanted == 0) { g_lock = false; Log("[%d] retaliation unlocked (police lost CJ)", now); }
+        if (now >= g_lockUntil) { g_lock = false; Log("[%d] retaliation unlocked (cooldown over)", now); }
         return;
     }
-    if (TierOf(g_points) < 5 || cfgMaxHeatSec <= 0) { g_maxSince = 0; return; }
+    if (g_points < cfgMaxHeatPoints || cfgMaxHeatSec <= 0) { g_maxSince = 0; return; }
     if (!g_maxSince) { g_maxSince = now; return; }
     if (now - g_maxSince < cfgMaxHeatSec * 1000) return;
     g_maxSince = 0;
@@ -1258,6 +1511,49 @@ static void DrawEvent(int now, float X, float Y, float S)
 }
 
 // one red star per level, next to (left of) the police wanted stars
+// game functions (1.0 US)
+typedef int   (__cdecl*    AddTxdSlot_t)(const char*);
+typedef bool  (__cdecl*    LoadTxd_t)(int, const char*);
+typedef void  (__cdecl*    TxdAddRef_t)(int);
+typedef void  (__cdecl*    TxdVoid_t)();
+typedef void  (__cdecl*    SetCurTxd_t)(int);
+typedef void  (__thiscall* SpriteSetTex_t)(void*, const char*);
+static AddTxdSlot_t   AddTxdSlot    = (AddTxdSlot_t)0x731C80;
+static LoadTxd_t      LoadTxd       = (LoadTxd_t)0x7320B0;
+static TxdAddRef_t    TxdAddRef     = (TxdAddRef_t)0x731A00;
+static TxdVoid_t      PushCurTxd    = (TxdVoid_t)0x7316A0;
+static TxdVoid_t      PopCurTxd     = (TxdVoid_t)0x7316B0;
+static SetCurTxd_t    SetCurTxd     = (SetCurTxd_t)0x7319C0;
+static SpriteSetTex_t SpriteSetTex  = (SpriteSetTex_t)0x727270;
+#define SCRIPT_SPRITES 0xA94B68              // CTheScripts::ScriptSprites[128]
+#define STAR_SPRITE    127                   // last slot, missions use the first ones
+
+static int  g_starTxd = -1;
+static bool g_starImgFailed = false;
+
+// loads retstar.txd once and (re)binds it to script sprite 128; false = use the font star
+static bool StarSpriteReady()
+{
+    if (!cfgStarImage || g_starImgFailed) return false;
+    if (g_starTxd < 0) {
+        char path[MAX_PATH]; sprintf(path, "%sretstar.txd", g_dir);
+        if (GetFileAttributesA(path) == INVALID_FILE_ATTRIBUTES) { Log("retstar.txd not found - using font stars"); g_starImgFailed = true; return false; }
+        int slot = AddTxdSlot("retstar");
+        if (slot < 0 || !LoadTxd(slot, path)) { Log("retstar.txd failed to load - using font stars"); g_starImgFailed = true; return false; }
+        TxdAddRef(slot);
+        g_starTxd = slot;
+        Log("retstar.txd loaded (slot %d)", slot);
+    }
+    void** sprite = (void**)(SCRIPT_SPRITES + STAR_SPRITE * 4);
+    if (!*sprite) {                                  // empty (first time, new game, or a mission cleared the sprites)
+        PushCurTxd(); SetCurTxd(g_starTxd);
+        SpriteSetTex(sprite, "retstar");
+        PopCurTxd();
+        if (!*sprite) { Log("retstar texture missing in txd - using font stars"); g_starImgFailed = true; return false; }
+    }
+    return true;
+}
+
 static void StarGlyph(float x, float y, int r, int g, int b)
 {
     Cmd(0x033F).F(cfgStarScaleX).F(cfgStarScaleY).Run();
@@ -1271,12 +1567,29 @@ static void StarGlyph(float x, float y, int r, int g, int b)
 // thin black border all around, like the game's wanted stars
 static void StarOutline(float x, float y)
 {
-    static const float o[8][2] = { {-0.5f,0}, {0.5f,0}, {0,-0.45f}, {0,0.45f}, {-0.4f,-0.35f}, {0.4f,-0.35f}, {-0.4f,0.35f}, {0.4f,0.35f} };
+    static const float o[8][2] = { {-0.22f,0}, {0.22f,0}, {0,-0.2f}, {0,0.2f}, {-0.22f,0}, {0.22f,0}, {0,-0.2f}, {0,0.2f} };
     for (int k = 0; k < 8; k++) StarGlyph(x + o[k][0], y + o[k][1], 0, 0, 0);
 }
 
-// one red star per level, drawn star by star in the free slots to the left
-// of the police wanted stars (same spacing as the yellow ones)
+// star number `slot` (0 = rightmost) of the red row
+static void DrawStarAt(int slot, bool sameRow, int r, int g, int b)
+{
+    if (StarSpriteReady()) {
+        float cx = cfgSprX - slot * cfgStarStep;
+        float cy = cfgSprY - (sameRow ? cfgStarRowGap : 0.0f);
+        if (cfgStarImgOutline)                       // light black outline
+            Cmd(0x038D).I(STAR_SPRITE + 1).F(cx).F(cy).F(cfgSprW * 1.28f).F(cfgSprH * 1.28f).I(0).I(0).I(0).I(215).Run();
+        Cmd(0x038D).I(STAR_SPRITE + 1).F(cx).F(cy).F(cfgSprW).F(cfgSprH).I(r).I(g).I(b).I(255).Run();   // DRAW_SPRITE
+        return;
+    }
+    float x = cfgStarsX - slot * cfgStarStep;
+    float y = cfgStarsY + (sameRow ? 0.0f : cfgStarRowGap);
+    if (cfgStarShadow) StarOutline(x, y);
+    StarGlyph(x, y, r, g, b);
+}
+
+// one red star per level, in a row right below the police wanted stars
+// (same spacing as the yellow ones)
 static void DrawStars(int now, bool playing)
 {
     if (!cfgStars || !playing) return;
@@ -1288,11 +1601,9 @@ static void DrawStars(int now, bool playing)
         else yellow = ((t - 2000) / 200) % 2 == 1 || t > HEAT_ANIM_MS - 300;
         if (!show) return;
         Cmd(0x03F0).I(1).Run();
-        for (int i = 0; i < 5; i++) {
-            float x = cfgStarsX - i * cfgStarStep;
-            if (cfgStarShadow) StarOutline(x, cfgStarsY);
-            if (yellow) StarGlyph(x, cfgStarsY, 236, 182, 46);
-            else        StarGlyph(x, cfgStarsY, cfgStarR, cfgStarG, cfgStarB);
+        for (int i = 0; i < MAX_TIER; i++) {
+            if (yellow) DrawStarAt(i, cfgStarsSameRow != 0, 236, 182, 46);
+            else        DrawStarAt(i, cfgStarsSameRow != 0, cfgStarR, cfgStarG, cfgStarB);
         }
         return;
     }
@@ -1301,15 +1612,9 @@ static void DrawStars(int now, bool playing)
     if (cfgStarBlink && g_event == EV_AMBUSH && now - g_eventTime < 3000 && (now / 250) % 2) return;   // ambush coming
     if (g_maxSince && now - g_maxSince > cfgMaxHeatSec * 1000 - 10000 && (now / 200) % 2) return;     // last 10 s at max
     int first = 0;
-    float y = cfgStarsY;
     if (cfgStarsSameRow) { Cmd w(0x01C0); w.I(0).O().Run(); first = LV(0); if (first > 6) first = 6; }
-    else y += cfgStarRowGap;
     Cmd(0x03F0).I(1).Run();
-    for (int i = 0; i < tier; i++) {
-        float x = cfgStarsX - (first + i) * cfgStarStep;
-        if (cfgStarShadow) StarOutline(x, y);
-        StarGlyph(x, y, cfgStarR, cfgStarG, cfgStarB);
-    }
+    for (int i = 0; i < tier; i++) DrawStarAt(first + i, cfgStarsSameRow != 0, cfgStarR, cfgStarG, cfgStarB);
 }
 
 static void DrawHud(int now, bool playing)
@@ -1319,7 +1624,7 @@ static void DrawHud(int now, bool playing)
         if (cfgEventsWhenClosed) { Cmd(0x03F0).I(1).Run(); DrawEvent(now, cfgHudX, cfgHudY, cfgHudScale); }
         return;
     }
-    static const int col[6][3] = { {150,150,150}, {230,200,40}, {240,140,30}, {235,80,30}, {210,30,30}, {160,0,60} };
+    static const int col[7][3] = { {150,150,150}, {230,200,40}, {240,140,30}, {235,80,30}, {210,30,30}, {160,0,60}, {120,0,90} };
     const float S = cfgHudScale;
     int tier = TierOf(g_points);
     float X = cfgHudX, Y = cfgHudY, W = 124.0f * S;
@@ -1400,7 +1705,7 @@ static void DebugKeys(int now)
                 if (k == 1) SetTier(tier - 1, now);
                 else if (k == 2) SetTier(tier + 1, now);
                 else if (k == 3) { if (tier > 0 && !g_pending) g_nextWave = now; }    // force ambush now
-                else if (tier > 0 && g_heli.state == 0) { g_heli.cooldownUntil = 0; g_heliRequest = true; }   // force helicopter
+                else if (tier > 0) { for (int k = 0; k < MAX_HELIS; k++) g_helis[k].cooldownUntil = 0; g_heliRequest = 1; }   // force helicopter
             }
         }
         prev[k] = down;
@@ -1435,7 +1740,8 @@ static void Tick()
             g_heatAnim = 0;
             g_maxSince = 0;
             CleanupAll();
-            if (cfgDeathPenalty > 0 && g_points > 0) AddPoints(-cfgDeathPenalty, EV_DEATH);
+            if (cfgResetOnDeath && g_points > 0) { AddPoints(-g_points, EV_DEATH); g_maxSince = 0; }   // all red stars gone
+            else if (cfgDeathPenalty > 0 && g_points > 0) AddPoints(-cfgDeathPenalty, EV_DEATH);
             g_nextWave = now + 30000;
         }
         ScanKills(false); ScanThefts(false);
@@ -1454,7 +1760,9 @@ static void Tick()
     UpdateHunters(now, playerChar, px, py);
     UpdateSpawner(now, playerChar, px, py, pz);
     UpdateHeli(now, playerChar, px, py, pz);
+    UpdateTank(now, playerChar, px, py, pz);
     UpdateMaxHeat(now);
+    FloodGuard(now);
     UpdateWanted();
     DrawHud(now, true);
     DrawStars(now, true);

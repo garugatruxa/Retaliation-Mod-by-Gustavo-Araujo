@@ -1,4 +1,4 @@
-﻿# Uso: powershell -ExecutionPolicy Bypass -File build.ps1 -Version 1.03
+# Uso: powershell -ExecutionPolicy Bypass -File build.ps1 -Version 1.03
 #   gera Mod\Builds\Retaliation <versao>\  (pasta pronta pro modloader)
 #   e guarda o codigo dessa versao em Mod\source\history\<versao>\
 param(
@@ -19,6 +19,10 @@ if ($LASTEXITCODE -ne 0) { throw "compile failed" }
 
 & python "$SrcDir\make_cs.py" "$out\Retaliation.cs"
 if ($LASTEXITCODE -ne 0) { throw "cs build failed" }
+if (Test-Path "$SrcDir\make_txd.py") {
+    & python "$SrcDir\make_txd.py" "$out\retstar.txd"
+    if ($LASTEXITCODE -ne 0) { throw "txd build failed" }
+}
 
 Copy-Item "$SrcDir\Retaliation.ini" "$out\Retaliation.ini" -Force
 Copy-Item "$SrcDir\LEIAME.txt" "$out\LEIAME.txt" -Force
@@ -27,5 +31,6 @@ Copy-Item "$SrcDir\LEIAME.txt" "$out\LEIAME.txt" -Force
 $hist = Join-Path $PSScriptRoot "history\$Version"
 if ((Resolve-Path $SrcDir).Path -ne (New-Item -ItemType Directory -Force $hist).FullName) {
     Copy-Item "$SrcDir\Retaliation.cpp", "$SrcDir\make_cs.py", "$SrcDir\Retaliation.ini", "$SrcDir\LEIAME.txt" $hist -Force
+    if (Test-Path "$SrcDir\make_txd.py") { Copy-Item "$SrcDir\make_txd.py" $hist -Force }
 }
 Write-Host "Build OK -> $out"
